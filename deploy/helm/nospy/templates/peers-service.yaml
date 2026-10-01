@@ -1,0 +1,21 @@
+{{- if and (eq .Values.mode "service") (include "nospy.peers" (dict "Values" .Values)) }}
+{{- $tls := not (empty .Values.tls.secretName) }}
+# Headless: DNS returns the IP of every ready replica, which nospy resolves every few seconds to
+# find the replica that owns a client. Not-ready pods are left out (publishNotReadyAddresses false),
+# and a replica that is not listed serves every request itself.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nospy.peersName" . }}
+  labels:
+    {{- include "nospy.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: false
+  selector:
+    {{- include "nospy.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: {{ ternary "https" "http" $tls }}
+      port: {{ int .Values.port }}
+      targetPort: {{ ternary "https" "http" $tls }}
+{{- end }}

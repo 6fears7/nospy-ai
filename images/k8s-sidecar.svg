@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 510" width="960" height="510" role="img" aria-labelledby="t d">
+  <title id="t">nospy as a sidecar in a Kubernetes pod</title>
+  <desc id="d">Inside one pod, the app container sends HTTP to nospy on 127.0.0.1:8788, a native sidecar with auth none. nospy forwards redacted requests over HTTPS to the LLM API. An optional key Secret is mounted into nospy so the app never holds the key. Other pods cannot reach the loopback port.</desc>
+  <defs>
+  <style>
+    .bg{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .box{fill:#f6f8fa;stroke:#8c959f;stroke-width:1.5}
+    .dim{fill:#f6f8fa;stroke:#c3cad2;stroke-width:1.5}
+    .nospy{fill:#000000;stroke:#8528b5;stroke-width:2.5}
+    .group{fill:none;stroke:#8c959f;stroke-width:1.5;stroke-dasharray:6 4}
+    .gate{fill:#fff1e5;stroke:#bc4c00;stroke-width:1.5;stroke-dasharray:4 3}
+    .t{fill:#1f2328;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}
+    .h{font-weight:600}
+    .big{font-size:18px}
+    .m{fill:#57606a}
+    .s{font-size:13px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+    .nt{fill:#8528b5}
+    .real{fill:#cf222e}
+    .red{fill:#1a7f37}
+    .warn{fill:#a04100}
+    .line{stroke:#57606a;stroke-width:2;fill:none}
+    .lineN{stroke:#8528b5;stroke-width:2.5;fill:none}
+    .dash{stroke-dasharray:6 4}
+    .block{stroke:#cf222e;stroke-width:3;fill:none}
+    .head{fill:#57606a}
+    .headN{fill:#8528b5}
+    .dot{fill:#8528b5}
+    .dotT{fill:#ffffff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:13px;font-weight:700}
+    .swR{fill:#cf222e}
+    .swG{fill:#1a7f37}
+    @media (prefers-color-scheme: dark){
+      .bg{fill:#0d1117;stroke:#30363d}
+      .box{fill:#161b22;stroke:#7d8590}
+      .dim{fill:#161b22;stroke:#484f58}
+      .nospy{stroke:#a455d6}
+      .group{stroke:#7d8590}
+      .gate{fill:#2d1a0a;stroke:#f0883e}
+      .t{fill:#e6edf3}
+      .m{fill:#a8b3bf}
+      .nt{fill:#b06ade}
+      .real{fill:#ff7b72}
+      .red{fill:#56d364}
+      .warn{fill:#f0883e}
+      .line{stroke:#a8b3bf}
+      .lineN{stroke:#b06ade}
+      .block{stroke:#ff7b72}
+      .head{fill:#a8b3bf}
+      .headN{fill:#b06ade}
+      .dot{fill:#b06ade}
+      .dotT{fill:#0d1117}
+      .swR{fill:#ff7b72}
+      .swG{fill:#56d364}
+    }
+    /* inside a nospy box: black in both modes, so these come after the dark block and need no override */
+    .tn{fill:#ffffff}
+    .mn{fill:#c4c4c4}
+    .ntn{fill:#d2a8ff}
+    .inb{fill:#1a1a1a;stroke:#555555;stroke-width:1.5}
+  </style>
+  <marker id="ah" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="head"/></marker>
+  <marker id="ahN" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="headN"/></marker>
+  </defs>
+  <rect class="bg" x="1" y="1" width="958" height="508" rx="14"/>
+
+  <!-- pod -->
+  <rect class="group" x="20" y="40" width="640" height="450" rx="14"/>
+  <text class="t h big" x="40" y="72">Pod</text>
+  <text class="t s m" x="86" y="72">(shared loopback)</text>
+
+  <!-- app -->
+  <rect class="box" x="40" y="120" width="250" height="180" rx="10"/>
+  <text class="t h big" x="165" y="152" text-anchor="middle">app container</text>
+  <text class="t s m" x="165" y="184" text-anchor="middle">env vars point at the sidecar</text>
+  <text class="t mono" x="165" y="208" text-anchor="middle">ANTHROPIC_BASE_URL</text>
+  <text class="t mono" x="165" y="228" text-anchor="middle">OPENAI_BASE_URL</text>
+  <text class="t mono m" x="165" y="256" text-anchor="middle">http://127.0.0.1:8788/…</text>
+
+  <!-- app -> nospy -->
+  <text class="t s m" x="335" y="192" text-anchor="middle">HTTP</text>
+  <line class="line" x1="294" y1="210" x2="376" y2="210" marker-end="url(#ah)"/>
+  <text class="t s m" x="335" y="232" text-anchor="middle">loopback</text>
+
+  <!-- nospy -->
+  <rect class="nospy" x="380" y="120" width="255" height="200" rx="10"/>
+  <text class="t h big ntn" x="507" y="152" text-anchor="middle">nospy</text>
+  <text class="t s tn" x="507" y="176" text-anchor="middle">native sidecar</text>
+  <text class="t mono tn" x="507" y="198" text-anchor="middle">initContainer</text>
+  <text class="t mono tn" x="507" y="216" text-anchor="middle">restartPolicy: Always</text>
+  <text class="t mono ntn" x="507" y="250" text-anchor="middle">127.0.0.1:8788</text>
+  <text class="t mono ntn" x="507" y="268" text-anchor="middle">--auth none</text>
+  <text class="t s mn" x="507" y="296" text-anchor="middle">redacts and restores</text>
+
+  <!-- key secret -->
+  <rect class="box" x="380" y="390" width="255" height="80" rx="10"/>
+  <text class="t h" x="507" y="416" text-anchor="middle">key Secret (optional)</text>
+  <text class="t mono" x="507" y="438" text-anchor="middle">key-mode=inject</text>
+  <text class="t s m" x="507" y="457" text-anchor="middle">mounted into nospy</text>
+  <line class="line" x1="507" y1="386" x2="507" y2="324" marker-end="url(#ah)"/>
+
+  <!-- out of the pod -->
+  <rect class="box" x="790" y="150" width="150" height="130" rx="10"/>
+  <text class="t h big" x="865" y="184" text-anchor="middle">LLM API</text>
+  <text class="t s m" x="865" y="212" text-anchor="middle">outside the pod</text>
+  <text class="t s m" x="720" y="196" text-anchor="middle">HTTPS</text>
+  <line class="lineN" x1="639" y1="206" x2="786" y2="206" marker-end="url(#ahN)"/>
+  <line class="lineN" x1="786" y1="252" x2="639" y2="252" marker-end="url(#ahN)"/>
+  <text class="t s m" x="720" y="274" text-anchor="middle">response</text>
+
+  <!-- other pods blocked -->
+  <rect class="dim" x="800" y="380" width="140" height="80" rx="10"/>
+  <text class="t h" x="870" y="414" text-anchor="middle">other pods</text>
+  <text class="t s m" x="870" y="436" text-anchor="middle">in the cluster</text>
+  <line class="line dash" x1="796" y1="420" x2="690" y2="420"/>
+  <path class="block" d="M672 411L690 429M690 411L672 429"/>
+  <text class="t s warn" x="737" y="402" text-anchor="middle">unreachable</text>
+</svg>

@@ -1,0 +1,13 @@
+{{- if and (eq .Values.mode "service") (gt (int .Values.replicas) 1) }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "nospy.fullname" . }}
+  labels:
+    {{- include "nospy.labels" . | nindent 4 }}
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      {{- include "nospy.selectorLabels" . | nindent 6 }}
+{{- end }}

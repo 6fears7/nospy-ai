@@ -1,0 +1,9 @@
+# Stand-in for a user's app chart: depends on nospy and includes its sidecar templates.
+# Used by deploy/helm/test.sh and to generate nospy/examples/sidecar-deployment.yaml.
+apiVersion: v2
+name: app
+version: 0.1.0
+dependencies:
+  - name: nospy
+    version: 0.1.0
+    repository: file://../../nospy

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" role="img" aria-labelledby="t d">
+  <title id="t">nospy serve in front of several clients</title>
+  <desc id="d">Several clients each send requests with their unique token in X-Nospy-Token to one long-running nospy serve process. nospy checks the token, redacts the request, picks the upstream by path prefix and sends it to that LLM API over HTTPS, then restores placeholders in the response on the way back. The routes and auth mode are set at runtime</desc>
+  <defs>
+  <style>
+    .bg{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .box{fill:#f6f8fa;stroke:#8c959f;stroke-width:1.5}
+    .nospy{fill:#000000;stroke:#8528b5;stroke-width:2.5}
+    .t{fill:#1f2328;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}
+    .h{font-weight:600}
+    .big{font-size:18px}
+    .m{fill:#57606a}
+    .s{font-size:13px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+    .line{stroke:#57606a;stroke-width:2;fill:none}
+    .lineN{stroke:#8528b5;stroke-width:2.5;fill:none}
+    .dash{stroke-dasharray:6 4}
+    .head{fill:#57606a}
+    .headN{fill:#8528b5}
+    @media (prefers-color-scheme: dark){
+      .bg{fill:#0d1117;stroke:#30363d}
+      .box{fill:#161b22;stroke:#7d8590}
+      .nospy{stroke:#a455d6}
+      .t{fill:#e6edf3}
+      .m{fill:#a8b3bf}
+      .line{stroke:#a8b3bf}
+      .lineN{stroke:#b06ade}
+      .head{fill:#a8b3bf}
+      .headN{fill:#b06ade}
+    }
+    /* inside a nospy box: black in both modes, so these come after the dark block and need no override */
+    .tn{fill:#ffffff}
+    .mn{fill:#c4c4c4}
+    .ntn{fill:#d2a8ff}
+  </style>
+  <marker id="ah" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="head"/></marker>
+  <marker id="ahN" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="headN"/></marker>
+  </defs>
+  <rect class="bg" x="1" y="1" width="958" height="418" rx="14"/>
+
+  <!-- clients -->
+  <rect class="box" x="20" y="30" width="160" height="100" rx="10"/>
+  <text class="t h big" x="100" y="74" text-anchor="middle">app-a</text>
+  <text class="t s m" x="100" y="98" text-anchor="middle">unique token</text>
+
+  <rect class="box" x="20" y="150" width="160" height="100" rx="10"/>
+  <text class="t h big" x="100" y="194" text-anchor="middle">app-b</text>
+  <text class="t s m" x="100" y="218" text-anchor="middle">unique token</text>
+
+  <!-- nospy -->
+  <rect class="nospy" x="365" y="30" width="230" height="220" rx="10"/>
+  <text class="t h big ntn" x="480" y="64" text-anchor="middle">nospy serve</text>
+  <text class="t mono ntn" x="480" y="90" text-anchor="middle">0.0.0.0:8788</text>
+  <text class="t s tn" x="480" y="130" text-anchor="middle">checks the client's token</text>
+  <text class="t s tn" x="480" y="150" text-anchor="middle">redacts requests</text>
+  <text class="t s tn" x="480" y="170" text-anchor="middle">restores responses</text>
+  <text class="t s tn" x="480" y="190" text-anchor="middle">picks the upstream by path</text>
+  <text class="t s mn" x="480" y="226" text-anchor="middle">JSON and SSE</text>
+
+  <!-- upstreams -->
+  <rect class="box" x="780" y="30" width="160" height="100" rx="10"/>
+  <text class="t h big" x="860" y="58" text-anchor="middle">LLM API</text>
+  <text class="t mono" x="860" y="82" text-anchor="middle">/anthropic</text>
+  <text class="t s m" x="860" y="108" text-anchor="middle">over HTTPS</text>
+
+  <rect class="box" x="780" y="150" width="160" height="100" rx="10"/>
+  <text class="t h big" x="860" y="178" text-anchor="middle">LLM API</text>
+  <text class="t mono" x="860" y="202" text-anchor="middle">/openai</text>
+  <text class="t s m" x="860" y="228" text-anchor="middle">over HTTPS</text>
+
+  <!-- lane 1 -->
+  <text class="t s m" x="272" y="60" text-anchor="middle">request + X-Nospy-Token</text>
+  <line class="line" x1="184" y1="68" x2="361" y2="68" marker-end="url(#ah)"/>
+  <line class="line" x1="361" y1="108" x2="184" y2="108" marker-end="url(#ah)"/>
+  <text class="t s m" x="272" y="100" text-anchor="middle">response, restored</text>
+
+  <text class="t s m" x="687" y="60" text-anchor="middle">redacted request</text>
+  <line class="lineN" x1="599" y1="68" x2="776" y2="68" marker-end="url(#ahN)"/>
+  <line class="lineN" x1="776" y1="108" x2="599" y2="108" marker-end="url(#ahN)"/>
+  <text class="t s m" x="687" y="100" text-anchor="middle">response</text>
+
+  <!-- lane 2 -->
+  <text class="t s m" x="272" y="180" text-anchor="middle">request + X-Nospy-Token</text>
+  <line class="line" x1="184" y1="188" x2="361" y2="188" marker-end="url(#ah)"/>
+  <line class="line" x1="361" y1="228" x2="184" y2="228" marker-end="url(#ah)"/>
+  <text class="t s m" x="272" y="220" text-anchor="middle">response, restored</text>
+
+  <text class="t s m" x="687" y="180" text-anchor="middle">redacted request</text>
+  <line class="lineN" x1="599" y1="188" x2="776" y2="188" marker-end="url(#ahN)"/>
+  <line class="lineN" x1="776" y1="228" x2="599" y2="228" marker-end="url(#ahN)"/>
+  <text class="t s m" x="687" y="220" text-anchor="middle">response</text>
+
+  <!-- flags strip -->
+  <line class="line dash" x1="480" y1="284" x2="480" y2="254" marker-end="url(#ah)"/>
+  <rect class="box" x="20" y="286" width="920" height="112" rx="10"/>
+  <text class="t mono" x="40" y="334">nospy serve --auth static-tokens --tokens-file /run/tokens --listen 0.0.0.0:8788 \</text>
+  <text class="t mono" x="40" y="354">  --route /anthropic=https://api.anthropic.com --route /openai=https://api.openai.com/v1</text>
+</svg>

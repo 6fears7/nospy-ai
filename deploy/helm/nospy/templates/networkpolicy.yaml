@@ -1,0 +1,67 @@
+{{- if eq .Values.mode "service" }}
+{{- $peers := include "nospy.peers" (dict "Values" .Values) }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "nospy.fullname" . }}
+  labels:
+    {{- include "nospy.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "nospy.selectorLabels" . | nindent 6 }}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    {{- /* No allowedClients (and no peers) means no ingress at all. */}}
+    {{- with .Values.allowedClients }}
+    - from:
+        {{- toYaml . | nindent 8 }}
+      ports:
+        - protocol: TCP
+          port: {{ int $.Values.port }}
+    {{- end }}
+    {{- if $peers }}
+    # Other replicas, forwarding a client's requests to the replica that owns it
+    - from:
+        - podSelector:
+            matchLabels:
+              {{- include "nospy.selectorLabels" . | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: {{ int $.Values.port }}
+    {{- end }}
+    {{- if not (or .Values.allowedClients $peers) }} []
+    {{- end }}
+  egress:
+    # DNS
+    - ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+    {{- if $peers }}
+    # Other replicas (affinity forwarding)
+    - to:
+        - podSelector:
+            matchLabels:
+              {{- include "nospy.selectorLabels" . | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: {{ int $.Values.port }}
+    {{- end }}
+    # LLM upstreams. A standard NetworkPolicy cannot match hostnames, so this allows the TCP ports below
+    # (from the routes: the URL's port, else 443 for https and 80 for http; loopback adds none; plus
+    # networkPolicy.extraEgressPorts) to any address. Use an FQDN-aware policy (Cilium, Calico) to narrow
+    # it to these hosts:
+    {{- range .Values.routes }}
+    #   {{ .prefix }}: {{ (urlParse .upstream).hostname }}
+    {{- end }}
+    {{- range .Values.providers }}
+    #   /{{ . }}: built-in provider (see `nospy providers`)
+    {{- end }}
+    {{- /* No TCP upstream rule when the set is empty (every route on loopback, no extras). */}}
+    {{- with include "nospy.egressPorts" (dict "Values" .Values) | fromJsonArray }}
+    - ports:
+        {{- range . }}
+        - {protocol: TCP, port: {{ int . }}}
+        {{- end }}
+    {{- end }}
+{{- end }}

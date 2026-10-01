@@ -1,0 +1,8 @@
+{{- /* Renders nothing; fails the install on an invalid mode, route or networkPolicy.extraEgressPorts. */}}
+{{- include "nospy.validate" (dict "Values" .Values) }}
+{{- range (.Values.networkPolicy).extraEgressPorts }}
+{{- /* Helm decodes YAML numbers as float64, --set as int64; a string like "3128" is refused. */}}
+{{- if not (and (or (kindIs "float64" .) (kindIs "int64" .)) (eq (float64 .) (floor (float64 .))) (ge (float64 .) 1.0) (le (float64 .) 65535.0)) }}
+{{- fail (printf "networkPolicy.extraEgressPorts entries must be integers 1-65535, got %v" .) }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # The workflows pin actions by major version; this keeps them (and their security fixes) current.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

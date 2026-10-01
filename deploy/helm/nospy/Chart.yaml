@@ -1,0 +1,7 @@
+apiVersion: v2
+name: nospy
+description: nospy redacts PII and secrets in LLM API traffic and restores them in responses. Runs as a sidecar (default) or a shared Service.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+kubeVersion: ">=1.29.0-0"

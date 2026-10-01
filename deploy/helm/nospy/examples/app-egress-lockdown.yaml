@@ -1,0 +1,25 @@
+# Optional, service mode only: apply this in each APP namespace so apps can only reach LLM APIs
+# through the nospy Service. Adjust the selectors and the nospy namespace.
+#
+# Caveat: a standard NetworkPolicy cannot match hostnames. Everything an app needs besides nospy
+# (its own APIs, package registries, ...) must be allowed by other rules, and this policy only
+# holds if the cluster enforces egress for the pods it selects. Cilium and Calico FQDN policies
+# can instead block the LLM API hostnames directly for the app pods, which is stricter.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: egress-via-nospy
+spec:
+  podSelector: {}          # every app pod in this namespace
+  policyTypes: [Egress]
+  egress:
+    - to:                  # DNS
+        - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: kube-system}}
+      ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+    - to:                  # the nospy Service
+        - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: nospy}}
+          podSelector: {matchLabels: {app.kubernetes.io/name: nospy}}
+      ports:
+        - {protocol: TCP, port: 8788}

@@ -1,0 +1,11 @@
+{
+  "auths": {
+    "ghcr.io": {
+      "auth": "dXNlcjpwYXNz"
+    },
+    "registry.example.com": {
+      "identitytoken": "idt-fake-0123456789"
+    }
+  },
+  "credsStore": "desktop"
+}

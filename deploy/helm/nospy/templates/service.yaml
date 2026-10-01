@@ -1,0 +1,18 @@
+{{- if eq .Values.mode "service" }}
+{{- $tls := not (empty .Values.tls.secretName) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nospy.fullname" . }}
+  labels:
+    {{- include "nospy.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  {{- /* No sessionAffinity: with more than one replica nospy itself sends each client to one replica (see peers-service.yaml). */}}
+  selector:
+    {{- include "nospy.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: {{ ternary "https" "http" $tls }}
+      port: {{ int .Values.port }}
+      targetPort: {{ ternary "https" "http" $tls }}
+{{- end }}

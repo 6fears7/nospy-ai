@@ -1,0 +1,70 @@
+# A plain Deployment with the nospy native sidecar, for kustomize or raw-YAML users.
+# Generated from deploy/helm/test/app with default values; regenerate with
+#   (cd deploy/helm/test/app && helm dependency update . && helm template a .)
+# Values that matter: image, the --route args (one per LLM API) and the base-URL env vars.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: a
+  template:
+    metadata:
+      labels:
+        app: a
+    spec:
+      # nospy runs as a native sidecar: it starts before the app and stops after it.
+      initContainers:
+        - name: nospy
+          image: "nospy:0.1.0"
+          imagePullPolicy: IfNotPresent
+          restartPolicy: Always
+          args:
+            - --listen
+            - "127.0.0.1:8788"
+            - --auth
+            - "none"
+            - --route
+            - "/anthropic=https://api.anthropic.com,api=anthropic"
+            - --route
+            - "/openai=https://api.openai.com/v1,api=openai"
+          startupProbe:
+            exec:
+              command: ["/nospy","healthcheck","--listen","127.0.0.1:8788"]
+            periodSeconds: 1
+            failureThreshold: 30
+            timeoutSeconds: 3
+          livenessProbe:
+            exec:
+              command: ["/nospy","healthcheck","--listen","127.0.0.1:8788"]
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 3
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+      containers:
+        - name: app
+          image: example/app:1
+          env:
+            - name: ANTHROPIC_BASE_URL
+              value: "http://127.0.0.1:8788/anthropic"
+            - name: OPENAI_BASE_URL
+              value: "http://127.0.0.1:8788/openai/v1"

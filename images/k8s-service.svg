@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" width="960" height="700" role="img" aria-labelledby="t d">
+  <title id="t">nospy as a shared Service with replicas</title>
+  <desc id="d">Client pods send requests with an X-Nospy-Token header through a NetworkPolicy to the nospy ClusterIP Service, which spreads them over three nospy replicas. Replica A authenticates the request, picks the owner replica B by rendezvous hash of client and route, and forwards it with X-Nospy-Peer: 1 over pod-to-pod TLS. B holds that client's remembered values and Responses chains, redacts, calls the LLM API and streams the response back through A. A headless peers Service lists every ready replica.</desc>
+  <defs>
+  <style>
+    .bg{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .box{fill:#f6f8fa;stroke:#8c959f;stroke-width:1.5}
+    .dim{fill:#f6f8fa;stroke:#c3cad2;stroke-width:1.5}
+    .nospy{fill:#000000;stroke:#8528b5;stroke-width:2.5}
+    .group{fill:none;stroke:#8c959f;stroke-width:1.5;stroke-dasharray:6 4}
+    .gate{fill:#fff1e5;stroke:#bc4c00;stroke-width:1.5;stroke-dasharray:4 3}
+    .t{fill:#1f2328;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}
+    .h{font-weight:600}
+    .big{font-size:18px}
+    .m{fill:#57606a}
+    .s{font-size:13px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+    .nt{fill:#8528b5}
+    .real{fill:#cf222e}
+    .red{fill:#1a7f37}
+    .warn{fill:#a04100}
+    .line{stroke:#57606a;stroke-width:2;fill:none}
+    .lineN{stroke:#8528b5;stroke-width:2.5;fill:none}
+    .dash{stroke-dasharray:6 4}
+    .block{stroke:#cf222e;stroke-width:3;fill:none}
+    .head{fill:#57606a}
+    .headN{fill:#8528b5}
+    .dot{fill:#8528b5}
+    .dotT{fill:#ffffff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:13px;font-weight:700}
+    .swR{fill:#cf222e}
+    .swG{fill:#1a7f37}
+    @media (prefers-color-scheme: dark){
+      .bg{fill:#0d1117;stroke:#30363d}
+      .box{fill:#161b22;stroke:#7d8590}
+      .dim{fill:#161b22;stroke:#484f58}
+      .nospy{stroke:#a455d6}
+      .group{stroke:#7d8590}
+      .gate{fill:#2d1a0a;stroke:#f0883e}
+      .t{fill:#e6edf3}
+      .m{fill:#a8b3bf}
+      .nt{fill:#b06ade}
+      .real{fill:#ff7b72}
+      .red{fill:#56d364}
+      .warn{fill:#f0883e}
+      .line{stroke:#a8b3bf}
+      .lineN{stroke:#b06ade}
+      .block{stroke:#ff7b72}
+      .head{fill:#a8b3bf}
+      .headN{fill:#b06ade}
+      .dot{fill:#b06ade}
+      .dotT{fill:#0d1117}
+      .swR{fill:#ff7b72}
+      .swG{fill:#56d364}
+    }
+    /* inside a nospy box: black in both modes, so these come after the dark block and need no override */
+    .tn{fill:#ffffff}
+    .mn{fill:#c4c4c4}
+    .ntn{fill:#d2a8ff}
+    .inb{fill:#1a1a1a;stroke:#555555;stroke-width:1.5}
+  </style>
+  <marker id="ah" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="head"/></marker>
+  <marker id="ahN" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="headN"/></marker>
+  </defs>
+  <rect class="bg" x="1" y="1" width="958" height="698" rx="14"/>
+
+  <!-- clients -->
+  <rect class="box" x="20" y="100" width="170" height="82" rx="10"/>
+  <text class="t h" x="105" y="124" text-anchor="middle">client pod</text>
+  <text class="t mono" x="105" y="147" text-anchor="middle">X-Nospy-Token:</text>
+  <text class="t mono" x="105" y="165" text-anchor="middle">nspy_…</text>
+  <rect class="box" x="20" y="196" width="170" height="64" rx="10"/>
+  <text class="t h" x="105" y="233" text-anchor="middle">client pod</text>
+
+  <!-- NetworkPolicy gate -->
+  <rect class="gate" x="203" y="84" width="20" height="196" rx="6"/>
+  <text class="t s warn" x="213" y="302" text-anchor="middle">NetworkPolicy:</text>
+  <text class="t s warn" x="213" y="320" text-anchor="middle">allowed clients</text>
+  <line class="line" x1="194" y1="141" x2="244" y2="141" marker-end="url(#ah)"/>
+  <line class="line" x1="194" y1="228" x2="244" y2="228" marker-end="url(#ah)"/>
+
+  <!-- Service -->
+  <rect class="box" x="248" y="100" width="146" height="160" rx="10"/>
+  <text class="t h" x="321" y="126" text-anchor="middle">nospy Service</text>
+  <text class="t s m" x="321" y="148" text-anchor="middle">ClusterIP</text>
+  <text class="t mono" x="321" y="174" text-anchor="middle">TLS :8788</text>
+  <text class="t s" x="321" y="200" text-anchor="middle">no sessionAffinity</text>
+  <text class="t s m" x="321" y="226" text-anchor="middle">any ready replica</text>
+
+  <!-- Deployment group -->
+  <rect class="group" x="415" y="52" width="365" height="518" rx="14"/>
+  <text class="t h" x="433" y="78">Deployment, 3 replicas</text>
+
+  <!-- replica A -->
+  <rect class="nospy" x="435" y="94" width="325" height="136" rx="10"/>
+  <text class="t h ntn" x="451" y="119">nospy replica A</text>
+  <circle class="dot" cx="458" cy="145" r="10"/>
+  <text class="dotT" x="458" y="150" text-anchor="middle">1</text>
+  <text class="t s tn" x="476" y="150">authenticate client</text>
+  <circle class="dot" cx="458" cy="180" r="10"/>
+  <text class="dotT" x="458" y="185" text-anchor="middle">2</text>
+  <text class="t s tn" x="476" y="180">pick owner replica</text>
+  <text class="t s tn" x="476" y="199">by hash of (client, route)</text>
+
+  <!-- service -> A (path 1) and other replicas -->
+  <line class="lineN" x1="398" y1="150" x2="431" y2="150" marker-end="url(#ahN)"/>
+  <path class="line dash" d="M394 244H404V388H431" marker-end="url(#ah)"/>
+  <path class="line dash" d="M404 388V534H431" marker-end="url(#ah)"/>
+
+  <!-- A -> B forward (3) and back (4) -->
+  <line class="lineN" x1="478" y1="234" x2="478" y2="306" marker-end="url(#ahN)"/>
+  <circle class="dot" cx="499" cy="253" r="10"/>
+  <text class="dotT" x="499" y="258" text-anchor="middle">3</text>
+  <text class="t mono" x="516" y="258">X-Nospy-Peer: 1</text>
+  <text class="t s" x="499" y="277">over pod-to-pod TLS</text>
+  <line class="lineN dash" x1="727" y1="306" x2="727" y2="234" marker-end="url(#ahN)"/>
+  <circle class="dot" cx="727" cy="270" r="10"/>
+  <text class="dotT" x="727" y="275" text-anchor="middle">4</text>
+
+  <!-- replica B -->
+  <rect class="nospy" x="435" y="310" width="325" height="170" rx="10"/>
+  <text class="t h ntn" x="451" y="335">nospy replica B</text>
+  <text class="t s mn" x="565" y="335">(owner)</text>
+  <circle class="dot" cx="458" cy="361" r="10"/>
+  <text class="dotT" x="458" y="366" text-anchor="middle">4</text>
+  <text class="t s tn" x="476" y="360">redacts, calls LLM API,</text>
+  <text class="t s tn" x="476" y="379">streams back through A</text>
+  <rect class="inb" x="451" y="396" width="293" height="70" rx="8"/>
+  <text class="t s tn" x="466" y="418">holds state for:</text>
+  <text class="t s h tn" x="466" y="438">- values</text>
+  <text class="t s h tn" x="466" y="456">- response chains</text>
+
+  <!-- replica C -->
+  <rect class="dim" x="435" y="504" width="325" height="50" rx="10"/>
+  <text class="t h" x="451" y="526">nospy replica C</text>
+  <text class="t s m" x="451" y="544">other clients</text>
+
+  <!-- B -> API -->
+  <text class="t s m" x="810" y="352" text-anchor="middle">HTTPS</text>
+  <line class="lineN" x1="764" y1="368" x2="840" y2="368" marker-end="url(#ahN)"/>
+  <rect class="box" x="844" y="320" width="96" height="96" rx="10"/>
+  <text class="t h big" x="892" y="364" text-anchor="middle">LLM</text>
+  <text class="t h big" x="892" y="386" text-anchor="middle">API</text>
+
+  <!-- peers Service -->
+  <line class="line dash" x1="597" y1="574" x2="597" y2="612" marker-end="url(#ah)"/>
+  <text class="t s m" x="612" y="598">each replica re-resolves peers every 10s</text>
+  <rect class="box" x="415" y="616" width="365" height="64" rx="10"/>
+  <text class="t mono" x="597" y="640" text-anchor="middle">&lt;release&gt;-peers</text>
+  <text class="t s m" x="597" y="662" text-anchor="middle">headless Service: DNS lists every ready replica</text>
+
+  <!-- legend -->
+  <line class="lineN" x1="40" y1="480" x2="80" y2="480" marker-end="url(#ahN)"/>
+  <text class="t s" x="92" y="485">numbered path of one request</text>
+  <line class="line dash" x1="40" y1="508" x2="80" y2="508" marker-end="url(#ah)"/>
+  <text class="t s" x="92" y="513">other possible paths, DNS lookup</text>
+  <line class="lineN dash" x1="40" y1="536" x2="80" y2="536" marker-end="url(#ahN)"/>
+  <text class="t s" x="92" y="541">response streaming back</text>
+</svg>

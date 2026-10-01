@@ -1,0 +1,86 @@
+# mode: sidecar (default) or service.
+#
+# sidecar: this chart renders nothing by itself. Add it as a dependency of your app chart and
+#   include the named templates nospy.sidecar, nospy.sidecarVolumes and nospy.sidecarEnv in
+#   your pod spec (see examples/sidecar-deployment.yaml). nospy listens on 127.0.0.1 in the pod
+#   with no auth, so nothing crosses the network in plaintext.
+# service: renders a Deployment, Service, NetworkPolicy, PodDisruptionBudget and ServiceAccount.
+#   It needs TLS and static tokens. Only use it if your cluster can force apps through it
+#   (default-deny egress or FQDN policies).
+mode: sidecar
+
+image:
+  repository: nospy
+  tag: ""            # default: the chart's appVersion
+  pullPolicy: IfNotPresent
+imagePullSecrets: []  # service mode; list of {name: ...}
+
+port: 8788
+
+# Expose aggregate Prometheus metrics at /metrics on the existing listener.
+# Service-mode scrapers must be allowed by allowedClients and trust the listener's TLS certificate.
+# Sidecar mode binds loopback: use a scraper in the same pod.
+metrics:
+  enabled: true
+
+# Every route nospy serves (nospy serve has no implicit routes). Rendered as --route args.
+# Setting `routes` replaces this list, so repeat the built-ins you still want.
+#   prefix     one path segment, e.g. /gpu
+#   upstream   URL of the LLM API
+#   api        protocol family (anthropic or openai); required for a prefix nospy doesn't know
+#   keyMode    passthrough (default) or inject
+#   keySecret  {name, key} of an existing Secret holding the real key; required for inject; nospy re-reads the key when the Secret changes
+routes:
+  - prefix: /anthropic
+    upstream: https://api.anthropic.com
+    api: anthropic
+  - prefix: /openai
+    upstream: https://api.openai.com/v1
+    api: openai
+# Extra routes from nospy's built-in provider table (`nospy providers`); rendered as --provider.
+providers: []
+
+# Custom terms file (plan step 10), read from an existing Secret and passed as --terms.
+# nospy reads it once at startup, so changes need a pod restart (or a reloader); the chart can't
+# checksum an existing Secret. (Route key files, the tokens file and the TLS files are re-read
+# by nospy when they change, with no restart.)
+terms:
+  existingSecret: ""
+  key: terms
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+
+sidecar:
+  # Route whose base URL the app gets per API family. Default: the first route of that family.
+  #   envRoutes: {anthropic: /myllm}
+  envRoutes: {}
+
+# ---- service mode only ----
+replicas: 1          # more than 1 also renders a headless <release>-peers Service and passes --peers/--peer-self: nospy sends each client's requests to one replica (the per-process known-values set and Responses chains need it)
+shutdownTimeoutSeconds: 30   # passed as --shutdown-timeout; terminationGracePeriodSeconds is this + 10
+auth:
+  type: static-tokens        # "none" is refused in service mode
+  existingSecret: ""         # Secret with a file of name:sha256hex lines (nospy hash-token)
+  key: tokens
+tls:
+  secretName: ""             # kubernetes.io/tls Secret (tls.crt, tls.key); with certManager below, the Secret cert-manager writes
+  # Optional cert-manager: set issuerRef.name and the chart renders a Certificate that writes
+  # tls.secretName, so cert-manager owns issuance and rotation (nospy reloads the files). Off by
+  # default; the chart still creates no secret material itself. Needs tls.secretName.
+  certManager:
+    issuerRef: {name: "", kind: Issuer, group: cert-manager.io}   # kind: ClusterIssuer for a cluster-wide issuer
+    dnsNames: []             # added to <release>, <release>.<ns>, <release>.<ns>.svc and <release>.<ns>.svc.cluster.local
+  insecure: false            # --insecure-plaintext: traffic, tokens and keys cross the network unencrypted
+# Who may connect to the Service: NetworkPolicy `from` entries, e.g.
+#   - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: apps}}
+allowedClients: []
+# TCP ports to allow in the egress NetworkPolicy beyond the ones derived from `routes` (the URL's
+# port, else 443/80; loopback adds none). For what the routes can't show: an egress HTTP proxy
+# (nospy honors HTTPS_PROXY, e.g. [3128]) or a table provider on a non-443 port. Integers 1-65535.
+networkPolicy:
+  extraEgressPorts: []

@@ -1,0 +1,14 @@
+# app settings
+PORT=8080
+DEBUG=true
+MONKEY=banana
+AUTHOR=me
+DB_PASSWORD=hunter2
+export API_KEY="abc"
+STRIPE_SECRET='sk_test_x'
+AUTH_TOKEN=t0k
+SENTRY_DSN=https://abc123@o0.ingest.example.com/1
+S3_CREDENTIALS=AKIAFAKE:fakesecret
+OLD_DB_PASSWORD=${DB_PASSWORD}
+EMPTY_TOKEN=
+ANTHROPIC_API_KEY=sk-ant-api03-FAKEFAKEFAKEFAKEFAKEFAKE

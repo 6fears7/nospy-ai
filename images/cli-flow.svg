@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" width="960" height="450" role="img" aria-labelledby="t d">
+  <title id="t">nospy wrapping an agent on the command line</title>
+  <desc id="d">The agent started with nospy talks to nospy on 127.0.0.1, which redacts DB_PASSWORD=hunter2hunter2 to DB_PASSWORD=[REDACTED_SECRET_1] before it goes to the LLM API over HTTPS, and restores the placeholder in the response on the way back.</desc>
+  <defs>
+  <style>
+    .bg{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .box{fill:#f6f8fa;stroke:#8c959f;stroke-width:1.5}
+    .dim{fill:#f6f8fa;stroke:#c3cad2;stroke-width:1.5}
+    .nospy{fill:#000000;stroke:#8528b5;stroke-width:2.5}
+    .group{fill:none;stroke:#8c959f;stroke-width:1.5;stroke-dasharray:6 4}
+    .gate{fill:#fff1e5;stroke:#bc4c00;stroke-width:1.5;stroke-dasharray:4 3}
+    .t{fill:#1f2328;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}
+    .h{font-weight:600}
+    .big{font-size:18px}
+    .m{fill:#57606a}
+    .s{font-size:13px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+    .nt{fill:#8528b5}
+    .real{fill:#cf222e}
+    .red{fill:#1a7f37}
+    .warn{fill:#a04100}
+    .line{stroke:#57606a;stroke-width:2;fill:none}
+    .lineN{stroke:#8528b5;stroke-width:2.5;fill:none}
+    .dash{stroke-dasharray:6 4}
+    .block{stroke:#cf222e;stroke-width:3;fill:none}
+    .head{fill:#57606a}
+    .headN{fill:#8528b5}
+    .dot{fill:#8528b5}
+    .dotT{fill:#ffffff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:13px;font-weight:700}
+    .swR{fill:#cf222e}
+    .swG{fill:#1a7f37}
+    @media (prefers-color-scheme: dark){
+      .bg{fill:#0d1117;stroke:#30363d}
+      .box{fill:#161b22;stroke:#7d8590}
+      .dim{fill:#161b22;stroke:#484f58}
+      .nospy{stroke:#a455d6}
+      .group{stroke:#7d8590}
+      .gate{fill:#2d1a0a;stroke:#f0883e}
+      .t{fill:#e6edf3}
+      .m{fill:#a8b3bf}
+      .nt{fill:#b06ade}
+      .real{fill:#ff7b72}
+      .red{fill:#56d364}
+      .warn{fill:#f0883e}
+      .line{stroke:#a8b3bf}
+      .lineN{stroke:#b06ade}
+      .block{stroke:#ff7b72}
+      .head{fill:#a8b3bf}
+      .headN{fill:#b06ade}
+      .dot{fill:#b06ade}
+      .dotT{fill:#0d1117}
+      .swR{fill:#ff7b72}
+      .swG{fill:#56d364}
+    }
+    /* inside a nospy box: black in both modes, so these come after the dark block and need no override */
+    .tn{fill:#ffffff}
+    .mn{fill:#c4c4c4}
+    .ntn{fill:#d2a8ff}
+    .inb{fill:#1a1a1a;stroke:#555555;stroke-width:1.5}
+  </style>
+  <marker id="ah" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="head"/></marker>
+  <marker id="ahN" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" class="headN"/></marker>
+  </defs>
+  <rect class="bg" x="1" y="1" width="958" height="448" rx="14"/>
+  <g transform="translate(0,-60)">
+
+  <!-- boxes -->
+  <rect class="box" x="20" y="110" width="160" height="220" rx="10"/>
+  <text class="t h big" x="100" y="148" text-anchor="middle">agent</text>
+  <text class="t mono" x="100" y="180" text-anchor="middle">nospy -- claude</text>
+  <text class="t s m" x="100" y="250" text-anchor="middle">child process</text>
+
+  <rect class="nospy" x="365" y="110" width="230" height="220" rx="10"/>
+  <text class="t h big ntn" x="480" y="148" text-anchor="middle">nospy</text>
+  <text class="t mono ntn" x="480" y="178" text-anchor="middle">127.0.0.1:&lt;port&gt;</text>
+  <text class="t mono ntn" x="480" y="196" text-anchor="middle">/&lt;nospy-token&gt;/…</text>
+  <text class="t s tn" x="480" y="240" text-anchor="middle">redacts requests</text>
+  <text class="t s tn" x="480" y="259" text-anchor="middle">restores responses</text>
+  <text class="t s mn" x="480" y="280" text-anchor="middle">JSON and SSE</text>
+
+  <rect class="box" x="780" y="110" width="160" height="220" rx="10"/>
+  <text class="t h big" x="860" y="148" text-anchor="middle">LLM API</text>
+  <text class="t mono" x="860" y="178" text-anchor="middle">api.anthropic.com</text>
+  <text class="t mono" x="860" y="196" text-anchor="middle">api.openai.com</text>
+  <text class="t s m" x="860" y="250" text-anchor="middle">over HTTPS</text>
+
+  <!-- request lane (left to right) -->
+  <text class="t s m" x="272" y="146" text-anchor="middle">request</text>
+  <text class="t mono" x="272" y="165" text-anchor="middle">DB_PASSWORD=</text>
+  <text class="t mono real" x="272" y="183" text-anchor="middle">hunter2hunter2</text>
+  <line class="line" x1="184" y1="200" x2="361" y2="200" marker-end="url(#ah)"/>
+
+  <text class="t s m" x="687" y="146" text-anchor="middle">redacted request</text>
+  <text class="t mono" x="687" y="165" text-anchor="middle">DB_PASSWORD=</text>
+  <text class="t mono red" x="687" y="183" text-anchor="middle">[REDACTED_SECRET_1]</text>
+  <line class="lineN" x1="599" y1="200" x2="776" y2="200" marker-end="url(#ahN)"/>
+
+  <!-- response lane (right to left) -->
+  <line class="line" x1="361" y1="246" x2="184" y2="246" marker-end="url(#ah)"/>
+  <text class="t s m" x="272" y="272" text-anchor="middle">response, restored</text>
+  <text class="t mono" x="272" y="291" text-anchor="middle">DB_PASSWORD=</text>
+  <text class="t mono real" x="272" y="309" text-anchor="middle">hunter2hunter2</text>
+
+  <line class="lineN" x1="776" y1="246" x2="599" y2="246" marker-end="url(#ahN)"/>
+  <text class="t s m" x="687" y="272" text-anchor="middle">response</text>
+  <text class="t mono" x="687" y="291" text-anchor="middle">DB_PASSWORD=</text>
+  <text class="t mono red" x="687" y="309" text-anchor="middle">[REDACTED_SECRET_1]</text>
+
+  <!-- environment strip -->
+  <line class="line dash" x1="100" y1="358" x2="100" y2="334" marker-end="url(#ah)"/>
+  <rect class="box" x="20" y="360" width="920" height="92" rx="10"/>
+  <text class="t s m" x="40" y="385">set by nospy:</text>
+  <text class="t mono" x="40" y="408">ANTHROPIC_BASE_URL=http://127.0.0.1:&lt;port&gt;/&lt;nospy-token&gt;/anthropic</text>
+  <text class="t mono" x="40" y="430">OPENAI_BASE_URL=http://127.0.0.1:&lt;port&gt;/&lt;nospy-token&gt;/openai/v1</text>
+
+  <!-- footer -->
+  <rect class="swR" x="690" y="475" width="12" height="12" rx="2"/>
+  <text class="t s" x="710" y="486">real</text>
+  <rect class="swG" x="800" y="475" width="12" height="12" rx="2"/>
+  <text class="t s" x="820" y="486">placeholder</text>
+  </g>
+</svg>

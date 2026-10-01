@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      # nospy runs as a native sidecar: it starts before the app and stops after it.
+      initContainers:
+        {{- include "nospy.sidecar" (dict "Values" .Values.nospy "Release" .Release) | nindent 8 }}
+      containers:
+        - name: app
+          image: example/app:1
+          env:
+            {{- include "nospy.sidecarEnv" .Values.nospy | nindent 12 }}
+      {{- $vols := include "nospy.sidecarVolumes" (dict "Values" .Values.nospy "Release" .Release) | trim }}
+      {{- if $vols }}
+      volumes:
+        {{- $vols | nindent 8 }}
+      {{- end }}

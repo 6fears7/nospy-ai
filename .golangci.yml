@@ -1,0 +1,22 @@
+version: "2"
+linters:
+  default: standard
+  enable:
+    - bodyclose
+    - errorlint
+    - gosec
+    - misspell
+    - noctx
+    - unconvert
+  exclusions:
+    rules:
+      # Tests use throwaway loopback servers and temp files; these checks only add noise there.
+      - path: _test\.go
+        linters:
+          - bodyclose
+          - gosec
+          - noctx
+formatters:
+  enable:
+    - gofmt
+    - goimports
