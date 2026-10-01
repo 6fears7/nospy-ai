@@ -49,7 +49,7 @@ If you change the Helm chart, also run `deploy/helm/test.sh` (needs `helm`, no c
 
 ## Releases
 
-Maintainers publish by pushing a tag: `git tag v0.2.0 && git push origin v0.2.0` (`v0.2.0-rc.1` makes a pre-release). The Release workflow runs the CI checks, then publishes binaries with `SHA256SUMS`, the container image, the Helm chart and a GitHub Release. Before tagging a final release, bump `version` and `appVersion` in `deploy/helm/nospy/Chart.yaml` and `nospy.appVersion` in `_helpers.tpl` on `main`; the workflow refuses a tag that doesn't match `appVersion`. After the first release, set the `nospy` and `charts/nospy` packages to public under the repository's Packages settings (GitHub creates them private and the API can't change that with the workflow token).
+Maintainers publish by pushing a tag: `git tag v0.2.0 && git push origin v0.2.0` (`v0.2.0-rc.1` makes a pre-release). The Release workflow runs the CI checks, then publishes binaries with `SHA256SUMS`, the container image, the Helm chart and a GitHub Release. Before tagging a final release, bump `version` and `appVersion` in `deploy/helm/nospy/Chart.yaml` and `nospy.appVersion` in `_helpers.tpl` on `main`; the workflow refuses a tag that doesn't match `appVersion`. After the first release, set the `nospy-ai` and `charts/nospy-ai` packages to public under the repository's Packages settings (GitHub creates them private and the API can't change that with the workflow token).
 
 ## License
 

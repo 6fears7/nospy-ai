@@ -69,8 +69,8 @@ The macOS binaries are not signed at this time. You will need to clear the quara
 To pull the container image / Helm chart:
 
 ```
-podman pull ghcr.io/6fears7/nospy:<version>
-helm install nospy oci://ghcr.io/6fears7/charts/nospy --version <version>
+podman pull ghcr.io/6fears7/nospy-ai:<version>
+helm install nospy oci://ghcr.io/6fears7/charts/nospy-ai --version <version>
 ```
 
 To build from source, you need Go 1.27 (standard library only).

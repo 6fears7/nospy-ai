@@ -2,8 +2,8 @@ name: Release
 
 # Push a tag like v0.1.0 (or v0.1.0-rc.1 for a pre-release) to test the code and publish:
 #   - binary archives for linux, macOS and Windows on amd64 and arm64, with SHA256SUMS
-#   - the multi-arch container image at ghcr.io/<owner>/nospy
-#   - the Helm chart as an OCI artifact at ghcr.io/<owner>/charts/nospy
+#   - the multi-arch container image at ghcr.io/<owner>/nospy-ai
+#   - the Helm chart as an OCI artifact at ghcr.io/<owner>/charts/nospy-ai
 #   - a GitHub Release with generated notes and build provenance attestations for the files
 # The tag without its "v" is the image tag, so it matches the Helm chart's appVersion.
 # A final release (no -suffix) also moves the image tags 1.2 and latest.
@@ -64,18 +64,18 @@ jobs:
       - name: Build
         run: |
           exe=nospy; [ "$GOOS" = windows ] && exe=nospy.exe
-          mkdir -p "stage/nospy_${VERSION}_${GOOS}_${GOARCH}" dist
+          mkdir -p "stage/nospy-ai_${VERSION}_${GOOS}_${GOARCH}" dist
           go build -trimpath -ldflags "-s -w -X main.version=${VERSION}" \
-            -o "stage/nospy_${VERSION}_${GOOS}_${GOARCH}/$exe" ./cmd/nospy
+            -o "stage/nospy-ai_${VERSION}_${GOOS}_${GOARCH}/$exe" ./cmd/nospy
       - name: Check the version stamp
         if: matrix.goos == 'linux' && matrix.goarch == 'amd64'
         run: |
-          out="$("stage/nospy_${VERSION}_linux_amd64/nospy" version)"
+          out="$("stage/nospy-ai_${VERSION}_linux_amd64/nospy" version)"
           echo "$out"
           [[ "$out" == "nospy ${VERSION} "* ]]
       - name: Package
         run: |
-          name="nospy_${VERSION}_${GOOS}_${GOARCH}"
+          name="nospy-ai_${VERSION}_${GOOS}_${GOARCH}"
           cp LICENSE README.md "stage/$name/"
           cd stage
           if [ "$GOOS" = windows ]; then
@@ -107,7 +107,7 @@ jobs:
       - id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/nospy
+          images: ghcr.io/${{ github.repository_owner }}/nospy-ai
           # latest only for a final release; flavor latest=false stops the action guessing.
           flavor: latest=false
           tags: |
@@ -141,15 +141,18 @@ jobs:
           version: v4.3.0
       # The chart's default image is the local dev name, and its default tag comes from a helper that
       # --app-version does not touch. Pin both in the published chart to the image released above.
+      # The chart is published as nospy-ai like the repo; the source directory and templates stay nospy.
       - name: Package
         run: |
           owner="${GITHUB_REPOSITORY_OWNER,,}"
           sed -i \
-            -e "s#^  repository: nospy\$#  repository: ghcr.io/${owner}/nospy#" \
+            -e "s#^  repository: nospy\$#  repository: ghcr.io/${owner}/nospy-ai#" \
             -e "s#^  tag: \"\"#  tag: \"${VERSION}\"#" \
             deploy/helm/nospy/values.yaml
-          grep -q "repository: ghcr.io/${owner}/nospy" deploy/helm/nospy/values.yaml
+          sed -i "s#^name: nospy\$#name: nospy-ai#" deploy/helm/nospy/Chart.yaml
+          grep -q "repository: ghcr.io/${owner}/nospy-ai" deploy/helm/nospy/values.yaml
           grep -q "tag: \"${VERSION}\"" deploy/helm/nospy/values.yaml
+          grep -q "^name: nospy-ai\$" deploy/helm/nospy/Chart.yaml
           mkdir dist
           helm package deploy/helm/nospy --version "$VERSION" --app-version "$VERSION" --destination dist
       - name: Push
@@ -157,7 +160,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "$GH_TOKEN" | helm registry login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
-          helm push "dist/nospy-${VERSION}.tgz" "oci://ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/charts"
+          helm push "dist/nospy-ai-${VERSION}.tgz" "oci://ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/charts"
       - uses: actions/upload-artifact@v4
         with:
           name: dist-chart
@@ -193,4 +196,4 @@ jobs:
         run: |
           flags=()
           [ "$PRERELEASE" = true ] && flags+=(--prerelease)
-          gh release create "$TAG" dist/* --title "$TAG" --generate-notes --verify-tag "${flags[@]}"
+          gh release create "$TAG" dist/* --title "nospy-ai $TAG" --generate-notes --verify-tag "${flags[@]}"
