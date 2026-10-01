@@ -29,5 +29,5 @@ Only the latest release gets fixes.
 - Give each client its own token (`nospy hash-token`) so it can be revoked on its own. Keep the tokens file and any key files in Kubernetes Secrets, mounted read-only and using PSS.
 - Restrict egress with NetworkPolicy so that apps can reach the LLM API only through `nospy`. See `deploy/helm/nospy/examples/app-egress-lockdown.yaml`.
 - Run the published image as shipped: distroless, uid 65532, read-only root filesystem, no capabilities, `no-new-privileges`.
-- Verify downloads: check `SHA256SUMS`, and run `gh attestation verify <file> --repo <owner>/nospy` for the build provenance.
+- Verify downloads: check `SHA256SUMS`, and run `gh attestation verify <file> --repo <owner>/nospy-ai` for the build provenance.
 - Treat `/metrics` as internal. It has no request content, but its labels show your routes and the kinds of data redacted.

@@ -61,7 +61,7 @@ Get the Grafana dashboard here: [nospy-redactions.json](deploy/grafana/nospy-red
 
 ## Install
 
-Download a binary from the [releases page](../../releases), and check it against `SHA256SUMS` (each file also has a build provenance attestation: `gh attestation verify <file> --repo 6fears7/nospy`). 
+Download a binary from the [releases page](../../releases), and check it against `SHA256SUMS` (each file also has a build provenance attestation: `gh attestation verify <file> --repo 6fears7/nospy-ai`). 
 
 ### MacOS
 The macOS binaries are not signed at this time. You will need to clear the quarantine flag after download to run the app: `xattr -d com.apple.quarantine nospy`. 
