@@ -56,11 +56,11 @@ Each client is assigned to one replica (the "owner"), which holds its conversati
 
 `nospy` exposes [Prometheus metrics](docs/metrics.md), including `nospy_redactions_total` by route and kind (`EMAIL`, `TOKEN`, etc...). 
 
-Get the Grafana dashboard here: [nospy-redactions.json](deploy/grafana/nospy-redactions.json).
+Get the Grafana dashboard here: [nospy-redactions.json](https://github.com/6fears7/nospy-ai/blob/main/deploy/grafana/nospy-redactions.json).
 
 ## Install
 
-Download a binary from the [releases page](../../releases), and check it against `SHA256SUMS` (each file also has a build provenance attestation: `gh attestation verify <file> --repo 6fears7/nospy-ai`). 
+Download a binary from the [releases page](https://github.com/6fears7/nospy-ai/releases), and check it against `SHA256SUMS` (each file also has a build provenance attestation: `gh attestation verify <file> --repo 6fears7/nospy-ai`). 
 
 ### MacOS
 The macOS binaries are not signed at this time. You will need to clear the quarantine flag after download to run the app: `xattr -d com.apple.quarantine nospy`. 
@@ -90,8 +90,8 @@ go build -o nospy ./cmd/nospy      # or: go install ./cmd/nospy
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/6fears7/nospy-ai/blob/main/CONTRIBUTING.md).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/6fears7/nospy-ai/blob/main/LICENSE)

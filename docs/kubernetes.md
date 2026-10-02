@@ -24,7 +24,7 @@ volumes:
   {{- include "nospy.sidecarVolumes" (dict "Values" .Values.nospy "Release" .Release) | nindent 8 }}
 ```
 
-A plain-manifest version is in [sidecar-deployment.yaml](../deploy/helm/nospy/examples/sidecar-deployment.yaml).
+A plain-manifest version is in [sidecar-deployment.yaml](https://github.com/6fears7/nospy-ai/blob/main/deploy/helm/nospy/examples/sidecar-deployment.yaml).
 
 ## Shared Service
 

@@ -1,3 +1,5 @@
 /nospy
+/build/
+/site/
 *.log
 .vscode/

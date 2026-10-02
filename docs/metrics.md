@@ -58,6 +58,6 @@ round(sum(increase(nospy_redactions_total[1h])))
 histogram_quantile(0.95, sum by (le, route) (rate(nospy_http_request_duration_seconds_bucket{handling="local"}[5m])))
 ```
 
-A Grafana dashboard of redactions by kind is in [deploy/grafana/nospy-redactions.json](../deploy/grafana/nospy-redactions.json). Import it from Dashboards > New > Import.
+A Grafana dashboard of redactions by kind is in [deploy/grafana/nospy-redactions.json](https://github.com/6fears7/nospy-ai/blob/main/deploy/grafana/nospy-redactions.json). Import it from Dashboards > New > Import.
 
 In Helm, metrics are on unless you set `metrics.enabled=false`. In Service mode, scrapers must be allowed by `allowedClients`. Use `scheme: https` and the right CA if the Service uses TLS. A sidecar listens on loopback, so the scraper **must** run in the same pod.
