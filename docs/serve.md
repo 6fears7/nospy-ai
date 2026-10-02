@@ -122,7 +122,7 @@ ok: routes anthropic(inject) openai(passthrough); auth static-tokens (3 tokens);
 
 ## Multiple replicas
 
-State is kept in each replica's memory and is not shared. A follow-up request (one that sets `previous_response_id`) that lands on a different replica finds no state for the earlier turn and gets a `409` (`nospy_chain_not_found`). With `--peers`, each client is pinned to one replica, so follow-ups reach the replica that holds their state.
+State is kept in each replica's memory unshared. A follow-up request (one that sets `previous_response_id`) that hits a different replica and finds no state for the earlier request receives a `409` (`nospy_chain_not_found`). With `--peers`, each client is pinned to one replica, so follow-ups reach the replica that holds their state.
 
 | Item | Detail |
 |---|---|
@@ -130,5 +130,5 @@ State is kept in each replica's memory and is not shared. A follow-up request (o
 | Owner | A rendezvous hash of the client name and route prefix picks one replica. The list of replicas is refreshed every 10s |
 | Forwarding | A replica that is not the owner checks the client, then forwards the request unchanged. It adds `X-Nospy-Peer: 1`, which is never forwarded twice and never sent upstream. The owner redacts and logs the counts |
 | Trust | Replicas must present the same TLS certificate (same Secret on every replica). With `--insecure-plaintext`, they use plain HTTP |
-| Fallback | If the owner is unreachable or its certificate doesn't match, the request is served locally with a warning. The failed replica is skipped for 10s |
+| Fallback | If the request can't reach the owner (connection refused, timeout or a different certificate), the replica that received the request handles it itself: it redacts the request and sends it upstream and logs a warning. That replica has none of the client's state, so a follow-up request may get a `409`. The failed replica is then skipped for 10s, and the client's requests go to the replica ranked next by the same hash. If the owner fails after the request body was sent or the response started, the client gets a `502` and the request is not retried |
 | Limits | One client maps to one replica. Requests take an extra hop. Because there is no replication, a client who moves to another replica after the replica set changes starts with empty state |

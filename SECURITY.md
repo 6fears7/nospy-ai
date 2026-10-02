@@ -12,7 +12,7 @@ You can expect an acknowledgement within a week. Fixes ship in a patch release, 
 
 - A secret or personal value that `nospy` should redact but sends upstream in plaintext.
 - A placeholder that is restored for the wrong client, route or request.
-- Real values, request bodies, credentials or clients showing up in logs, errors or metrics.
+- values, request bodies, credentials or clients showing up in logs, errors or metrics.
 - An authentication, TLS or peer-forwarding bypass in `serve` or the Helm chart.
 - A way to make `nospy` leak a client's token or proxy credentials.
 

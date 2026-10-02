@@ -55,7 +55,7 @@ helm install nospy deploy/helm/nospy --namespace nospy \
 
 | Item | Detail |
 |---|---|
-| Replicas | With `replicas > 1`, the chart adds a headless `<release>-peers` Service and starts pods with `--peers <release>-peers.<namespace>.svc:<port> --peer-self $(POD_IP)`. See [multiple replicas](serve.md#several-replicas) |
+| Replicas | With `replicas > 1`, the chart adds a headless `<release>-peers` Service and starts pods with `--peers <release>-peers.<namespace>.svc:<port> --peer-self $(POD_IP)`. See [multiple replicas](serve.md#multiple-replicas) |
 | NetworkPolicy egress | DNS as well as each route's port (the URL port, else 443 or 80; loopback upstreams add none), plus `networkPolicy.extraEgressPorts` (ex: `[3128]`) |
 | Strict Egress example  | `examples/app-egress-lockdown.yaml` |
 

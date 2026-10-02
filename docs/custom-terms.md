@@ -48,7 +48,7 @@ The redacted text goes to stdout and the counts to stderr. Note that:
 - The `[SECTION]` name became the kind in the placeholder: `[CODENAME]` gives `[REDACTED_CODENAME_n]`.
 - The email was caught by a built-in rule.
 
-To see *why* each thing matched,  youc an add `--explain` to the command:
+To see *why* each thing matched,  you can add `--explain` to the command:
 
 ```
 1:13  TERM  terms  "Project Falcon"
@@ -94,7 +94,7 @@ One entry per line. `#` starts a comment (at the start of a line or after whites
 | `[ADDRESS]` | A section like any other, for known postal addresses |
 | `[ALLOW]` | A section of exceptions, see below |
 
-Entries above the first section are kind `TERM`. When several entries overlap, the longest match wins.
+Entries above the first section are kind `TERM`. When several entries overlap, the longest match is used.
 
 ### Exemptions: `[ALLOW]`
 
@@ -112,7 +112,11 @@ ACME-0000
 Template uses ACME-0000, real one is [REDACTED_CUSTOMER_1].
 ```
 
-An allow entry is compared with the **whole** text a rule matched, ignoring case. There are no regexes, and it doesn't protect text that merely contains a term. Allowing `docs.acme.example` would not stop a plain `Acme` term from redacting the `acme` inside it. Use allow entries for identifiers such as hosts, IPs, emails, usernames and terms. Passwords, tokens and keys can never be allowed and the file will be rejected if attempted.
+An allow entry only exempts a match that is identical to it, ignoring case. It is not a pattern, and it does not protect text that contains it or sits inside it.
+
+For example, with the term `Acme` and the allow entry `docs.acme.example`, the hostname `docs.acme.example` is fully matched by the built-in hostname rule and left alone. But the `Acme` term separately matches just `acme` inside it. That is not identical to the allow entry, so it is still redacted: `docs.[REDACTED_TERM_1].example`. To keep it, you would have to allow `acme` itself, which stops `Acme` being redacted everywhere.
+
+Use allow entries for identifiers such as hosts, IPs, emails and usernames. Passwords, tokens and keys can never be allowed, and nospy rejects the file if they are used.
 
 ## When a built-in rule also matches
 

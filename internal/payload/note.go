@@ -4,8 +4,8 @@ package payload
 // "this value is unavailable" and refuses to repeat it. It is constant (no counts, kinds or
 // values), so it is cache-stable and leaks nothing about what was redacted.
 const PlaceholderNote = "Some values in this conversation (in messages, files and tool output) were replaced by the user's privacy proxy with placeholders like [REDACTED_IP_1] (the form is [REDACTED_KIND_n]). " +
-	"Each placeholder stands for a real value that the user has and sees. " +
-	"The proxy puts the real value back into everything you write, including tool calls. " +
+	"Each placeholder stands for a value that the user has and sees. " +
+	"The proxy puts the value back into everything you write, including tool calls. " +
 	"Wherever you need the value, use the placeholder exactly as written: quote it, repeat it, or put it in code and commands. " +
 	"Don't say the value is missing, don't ask for it and don't guess it. " +
 	"The same placeholder always means the same value."

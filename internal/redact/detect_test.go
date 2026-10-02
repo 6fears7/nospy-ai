@@ -90,7 +90,7 @@ func TestKeywordAfterUnderscore(t *testing.T) {
 		{"FOO=1 DB_PASSWORD=hunter2hunter2 ./run", "hunter2hunter2"},
 		{".env:3:DB_PASSWORD=x1y2z3w4", "x1y2z3w4"},
 		{`cfg MY_API_KEY: "abcd1234"`, "abcd1234"},
-		{"DB_PASSWORD=$ecret123", "$ecret123"},  // a real value that starts with $
+		{"DB_PASSWORD=$ecret123", "$ecret123"},  // a value that starts with $
 		{"login password=$hunter2", "$hunter2"}, // lowercase after $ is not a variable reference
 	} {
 		ms := testDetector.Detect(c.in)

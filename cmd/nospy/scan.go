@@ -36,7 +36,7 @@ func loadTermsFlag(cmd, path string, stderr io.Writer) (*redact.Terms, int) {
 
 func defineScanFlags(fs *flag.FlagSet) *scanOpts {
 	o := &scanOpts{}
-	fs.BoolVar(&o.explain, "explain", false, "print one line per match (line:col  KIND  rule  \"text\") instead of the redacted text; prints real values")
+	fs.BoolVar(&o.explain, "explain", false, "print one line per match (line:col  KIND  rule  \"text\") instead of the redacted text; prints values")
 	fs.StringVar(&o.terms, "terms", "", termsFlagUsage)
 	return o
 }
@@ -83,7 +83,7 @@ func runScan(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	det := redact.NewDetector(redact.Config{AllowHosts: defaultHosts(), Terms: terms})
 
 	if o.explain {
-		// The one place real values are printed on purpose; never reachable from the proxy.
+		// The one place values are printed on purpose; never reachable from the proxy.
 		if !isTerminal(stdout) {
 			_, _ = fmt.Fprintln(stderr, "nospy: warning: --explain prints the real matched values and stdout is not a terminal")
 		}

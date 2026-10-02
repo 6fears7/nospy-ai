@@ -19,6 +19,8 @@ The format is [Prometheus text format](https://prometheus.io/docs/instrumenting/
 | `nospy_redactions_total` | Replacements made while preparing requests, by route and kind. Counted as soon as redaction finishes, even if the upstream fails later |
 
 - With multiple replicas, scrape each pod. Filter request and latency queries to `handling="local"` so a forwarding replica's relay isn't counted as a second client request. Redactions are counted only where the redaction happens.
+- `nospy_redactions_total` counts replacements, *not* distinct secrets. Clients resend the whole conversation on every request, so a value that stays in the history is redacted and counted again on each request. A long session can therefore reach a total far above the number of distinct values. It matches the per-request `redacted` counts in the logs when you sum them. The Responses API with `previous_response_id` is the exception, since the client doesn't resend that history.
+- The counter lives as long as the process. To see a time range, use `increase()`
 
 ## Prometheus and Grafana
 
@@ -48,6 +50,9 @@ sum(rate(nospy_http_requests_total{handling="local",status=~"5.."}[5m]))
 
 # Redactions per second by category
 sum by (kind) (rate(nospy_redactions_total[5m]))
+
+# Redactions over the last hour
+round(sum(increase(nospy_redactions_total[1h])))
 
 # 95th-percentile total request duration, by route
 histogram_quantile(0.95, sum by (le, route) (rate(nospy_http_request_duration_seconds_bucket{handling="local"}[5m])))

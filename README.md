@@ -2,16 +2,16 @@
 
 ![NoSpy logo with a ghost in place of the O](images/nospy-logo-ghost-o.svg)
 
-`nospy` is a forward proxy that sits between an AI agent and its API. It swaps secrets and personal data in your requests for placeholders, and puts the real values back in the response. 
+`nospy` is a forward proxy that sits between an AI agent and its API. It swaps secrets and personal data in your requests for placeholders, and puts the values back in the response. 
 
 
 ## Architecture overview
 
 ### Wrap mode
 
-![nospy wrapping an agent: the agent talks to nospy on 127.0.0.1, which replaces DB_PASSWORD=hunter2hunter2 with a placeholder before the request goes to the LLM API over HTTPS, and restores the real value in the response](images/cli-flow.svg)
+![nospy wrapping an agent: the agent talks to nospy on 127.0.0.1, which replaces DB_PASSWORD=hunter2hunter2 with a placeholder before the request goes to the LLM API over HTTPS, and restores the value in the response](images/cli-flow.svg)
 
-The agent talks to `nospy` on 127.0.0.1. `nospy` redacts the request, sends it to the LLM API over HTTPS, and restores the original values in the response. See [Wrap mode](docs/wrap.md).
+`nospy` starts a proxy on a random local port and runs your agent with its base URL pointed at the proxy. See [Wrap mode](docs/wrap.md).
 
 ```bash
 nospy -- claude
@@ -21,11 +21,10 @@ nospy -- claude
 
 ![nospy serve with two clients: each client sends requests with its unique token in X-Nospy-Token, nospy checks the token, redacts the request, routes by path prefix (/anthropic or /openai) and sends it to that LLM API over HTTPS, then restores placeholders in the response; routes and auth are set by flags at startup, and /healthz and /metrics are also served](images/serve-flow.svg)
 
-`nospy serve` runs as a long-lived proxy for several clients, each authenticated by `--auth`. It serves only the routes you list. This is the same process the container and Kubernetes modes run. See [Serve mode](docs/serve.md).
+`nospy serve` runs as a long-lived proxy for several clients, each authenticated by `--auth` and serving routes listed with `--route`. `Container` and `Kubernetes` modes run via `serve` . See [Serve mode](docs/serve.md).
 
 ```bash
-./nospy serve --auth none --listen 127.0.0.1:8788 --route /anthropic=https://api.anthropic.com
-{"time":"2026-10-01T15:25:10.121356-04:00","level":"INFO","msg":"request","client":"local","route":"/anthropic","method":"POST","path":"/anthropic/v1/messages","status":200,"dur":8060000000,"redacted":{"DOMAIN":140,"EMAIL":5,"IPV4":3,"PASSWORD":54,"TOKEN":2,"USER":161}}
+nospy serve --auth none --listen 127.0.0.1:8788 --route /anthropic=https://api.anthropic.com
 ```
 
 ### Kubernetes sidecar
@@ -38,7 +37,7 @@ nospy -- claude
 
 ![nospy as a shared Service with three replicas: client pods reach the ClusterIP Service through the NetworkPolicy, replica A authenticates the request and forwards it to the owner replica B, which redacts, calls the LLM API and streams the response back through A; a headless peers Service lists every ready replica](images/k8s-service.svg)
 
-Replicas that doesn't own the client forward the request to the owner. See [Kubernetes](docs/kubernetes.md#shared-service) and [multiple replicas](docs/serve.md#several-replicas).
+Each client is assigned to one replica (the "owner"), which holds its conversation state. If a request is sent to another replica, that replica checks and forwards it to the owner. See [Kubernetes](docs/kubernetes.md#shared-service) and [multiple replicas](docs/serve.md#multiple-replicas).
 
 ## Pick a mode
 

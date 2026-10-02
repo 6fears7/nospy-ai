@@ -9,10 +9,10 @@ import (
 	"sync"
 )
 
-// Vault maps real values to placeholders and back. It is scoped to one request: the proxy
+// Vault maps values to placeholders and back. It is scoped to one request: the proxy
 // creates one per request, redacts the request with it and restores the response with it.
 // Numbers follow first appearance, and the payload walker visits fields in a fixed order, so
-// resent history gets the same placeholders every turn. Safe for concurrent use.
+// resent history gets the same placeholders every request. Safe for concurrent use.
 type Vault struct {
 	mu       sync.Mutex
 	byValue  map[string]string
@@ -75,14 +75,14 @@ func (v *Vault) Placeholder(kind, value string) string {
 	return ph
 }
 
-// Restore replaces every placeholder this vault issued with its real value. Unknown
+// Restore replaces every placeholder this vault issued with its value. Unknown
 // placeholders are left as they are.
 func (v *Vault) Restore(s string) string {
 	return v.restore(s, func(val string) string { return val })
 }
 
 // RestoreJSONString is Restore for text that sits inside a JSON string literal (streamed
-// tool arguments): real values are JSON-escaped so the surrounding JSON stays valid.
+// tool arguments): values are JSON-escaped so the surrounding JSON stays valid.
 func (v *Vault) RestoreJSONString(s string) string {
 	return v.restore(s, jsonEscape)
 }

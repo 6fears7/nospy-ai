@@ -143,7 +143,7 @@ func (m *Metrics) exposition() string {
 		}
 		_, _ = fmt.Fprintf(&out, "nospy_http_request_duration_seconds_bucket{%s,le=\"+Inf\"} %d\nnospy_http_request_duration_seconds_sum{%s} %g\nnospy_http_request_duration_seconds_count{%s} %d\n", labels, d.count, labels, d.sum, labels, d.count)
 	}
-	_, _ = fmt.Fprint(&out, "# HELP nospy_redactions_total Redaction replacements made while preparing requests, counted on the replica doing the redaction.\n# TYPE nospy_redactions_total counter\n")
+	_, _ = fmt.Fprint(&out, "# HELP nospy_redactions_total Redaction replacements made while preparing requests, counted on the replica doing the redaction. A value repeated in resent conversation history is counted on every request.\n# TYPE nospy_redactions_total counter\n")
 	rkeys := make([]redactionLabels, 0, len(m.redactions))
 	for key := range m.redactions {
 		rkeys = append(rkeys, key)

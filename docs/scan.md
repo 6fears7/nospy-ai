@@ -10,4 +10,4 @@ nospy scan --explain notes.md
 
 `nospy scan [--terms FILE] [--explain] [FILE...]` reads the files (or stdin; `-` also means stdin), prints the redacted text to stdout and the counts to stderr.
 
-`--explain` prints one line per match instead: `line:col KIND rule "text"`. It shows the real values.
+`--explain` prints one line per match instead: `line:col KIND rule "text"`. It shows the values.

@@ -27,7 +27,7 @@ var commands = map[string]command{
 	"nospy": {
 		usage: "nospy [flags] -- <command> [args...]\n       nospy serve|check|healthcheck|hash-token|scan|env|providers|version|help ...",
 		summary: "Run <command> behind a local redacting proxy. Secrets and PII in requests to the LLM API\n" +
-			"are replaced by placeholders like [REDACTED_EMAIL_1], and the real values are restored\n" +
+			"are replaced by placeholders like [REDACTED_EMAIL_1], and the values are restored\n" +
 			"in responses. The proxy listens on 127.0.0.1 behind a random per-run path token, and nospy\n" +
 			"hands its address to the command through base-URL env vars (and, for known agents, a\n" +
 			"settings file).\n" +

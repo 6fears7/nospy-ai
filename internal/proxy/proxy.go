@@ -1,5 +1,5 @@
 // Package proxy is the reverse proxy between an agent and an LLM API: it redacts request
-// bodies before they go upstream and restores real values in responses.
+// bodies before they go upstream and restores values in responses.
 package proxy
 
 import (

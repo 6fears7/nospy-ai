@@ -151,7 +151,7 @@ func TestKnownValuesAcrossRequests(t *testing.T) {
 	if strings.Contains(up, pw) || !strings.Contains(up, "the value is [REDACTED_SECRET_1] and mail [REDACTED_EMAIL_1]") {
 		t.Errorf("request 2 not redacted with a fresh vault:\n%s", up)
 	}
-	// The fake upstream echoes the placeholders it saw; the client gets the real values.
+	// The fake upstream echoes the placeholders it saw; the client gets the values.
 	if !strings.Contains(back, pw) || strings.Contains(back, "[REDACTED_") {
 		t.Errorf("response not restored: %s", back)
 	}

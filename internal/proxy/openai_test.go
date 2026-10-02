@@ -249,7 +249,7 @@ func TestOpenAIRoundTrips(t *testing.T) {
 				resp := post(t, e.px.URL+"/"+testToken+c.path, c.body(stream), map[string]string{"Authorization": "Bearer client-key"})
 				text, args := clientText(t, resp)
 				assertRedactedAndRestored(t, &fakeUpstream{calls: e.fu.recorded()}, text)
-				// The tool-call arguments come back as valid JSON holding the real values.
+				// The tool-call arguments come back as valid JSON holding the values.
 				var a struct{ Cmd string }
 				if err := json.Unmarshal([]byte(args), &a); err != nil {
 					t.Fatalf("arguments %q not JSON: %v", args, err)

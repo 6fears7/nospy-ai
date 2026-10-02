@@ -9,7 +9,7 @@ import (
 	"nospyai/internal/redact"
 )
 
-// RestoreResponse puts real values back into a non-streaming JSON response.
+// RestoreResponse puts values back into a non-streaming JSON response.
 func RestoreResponse(d Dialect, body []byte, v *redact.Vault) ([]byte, error) {
 	if !strings.Contains(string(body), "[REDACTED_") {
 		return body, nil

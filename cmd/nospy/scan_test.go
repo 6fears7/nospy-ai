@@ -154,7 +154,7 @@ func TestScanExplain(t *testing.T) {
 	if strings.Contains(out, "MONKEY") || strings.Contains(out, "banana") || strings.Contains(out, "AUTHOR") {
 		t.Errorf("explain lists a non-secret line:\n%s", out)
 	}
-	// The test's stdout is not a terminal, so the real values get a warning.
+	// The test's stdout is not a terminal, so the values get a warning.
 	if !strings.Contains(errb, "warning") {
 		t.Errorf("no warning on stderr: %q", errb)
 	}

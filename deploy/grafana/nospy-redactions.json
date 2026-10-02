@@ -49,7 +49,8 @@
   "panels": [
     {
       "id": 1,
-      "title": "Redactions since nospy started",
+      "title": "Redactions in selected range",
+      "description": "Replacements sent upstream in the selected time range, not distinct redactions. Clients resend the whole conversation every request, so a value that stays in the history is counted again on every request.",
       "type": "stat",
       "datasource": {
         "type": "prometheus",
@@ -67,7 +68,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(nospy_redactions_total{route=~\"$route\"})",
+          "expr": "round(sum(increase(nospy_redactions_total{route=~\"$route\"}[$__range])))",
           "legendFormat": "total",
           "refId": "A",
           "instant": true,
@@ -122,7 +123,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count(sum by (kind) (nospy_redactions_total{route=~\"$route\"}) > 0) or vector(0)",
+          "expr": "count(sum by (kind) (increase(nospy_redactions_total{route=~\"$route\"}[$__range])) > 0.5) or vector(0)",
           "legendFormat": "kinds",
           "refId": "A",
           "instant": true,
@@ -245,7 +246,7 @@
     },
     {
       "id": 5,
-      "title": "Redactions by kind (cumulative since start)",
+      "title": "Redactions by kind (selected range)",
       "type": "bargauge",
       "datasource": {
         "type": "prometheus",
@@ -263,7 +264,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum by (kind) (nospy_redactions_total{route=~\"$route\"})",
+          "expr": "round(sum by (kind) (increase(nospy_redactions_total{route=~\"$route\"}[$__range])))",
           "legendFormat": "{{kind}}",
           "refId": "A",
           "instant": true,
@@ -311,7 +312,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum by (kind) (nospy_redactions_total{route=~\"$route\"})",
+          "expr": "round(sum by (kind) (increase(nospy_redactions_total{route=~\"$route\"}[$__range])))",
           "legendFormat": "{{kind}}",
           "refId": "A",
           "instant": true,
@@ -392,7 +393,7 @@
     },
     {
       "id": 8,
-      "title": "Kind \u00d7 route (cumulative since start)",
+      "title": "Kind \u00d7 route (selected range)",
       "type": "table",
       "datasource": {
         "type": "prometheus",
@@ -410,7 +411,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum by (route, kind) (nospy_redactions_total{route=~\"$route\"})",
+          "expr": "round(sum by (route, kind) (increase(nospy_redactions_total{route=~\"$route\"}[$__range])))",
           "legendFormat": "",
           "refId": "A",
           "instant": true,
@@ -446,5 +447,5 @@
       ]
     }
   ],
-  "description": "Which kinds of values nospy redacted (EMAIL, TOKEN, USER, ...), plus request rate and 5xx. Needs a Prometheus data source scraping nospy's /metrics."
+  "description": "Which kinds of values nospy redacted (EMAIL, TOKEN, USER, ...) in the selected time range, plus request rate and 5xx. Redactions are replacements per request, so a value repeated in resent conversation history is counted each turn. Needs a Prometheus data source scraping nospy's /metrics."
 }
