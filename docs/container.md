@@ -16,7 +16,7 @@ podman run --read-only --cap-drop=ALL --security-opt no-new-privileges \
 |---|---|
 | Image | Distroless, about 11 MB, runs as uid 65532 |
 | Multi-arch | `podman build --format docker --platform linux/amd64,linux/arm64 --manifest nospy:multi .` |
-| Published image | Pushing a `v*` tag (ex: `v0.1.0`) runs CI, then [release.yml](../.github/workflows/release.yml) pushes `linux/amd64` and `linux/arm64` to `ghcr.io/6fears7/nospy-ai:0.1.0` and `:0.1` (and `:latest` for a stable release). Set the Helm `image.repository` to it. The package is private until you make it public in the GitHub package settings |
+| Published image | Pushing a `v*` tag (ex: `v0.1.0`) runs CI, then [release.yml](https://github.com/6fears7/nospy-ai/blob/main/.github/workflows/release.yml) pushes `linux/amd64` and `linux/arm64` to `ghcr.io/6fears7/nospy-ai:0.1.0` and `:0.1` (and `:latest` for a stable release). Set the Helm `image.repository` to it. The package is private until you make it public in the GitHub package settings |
 | Smoke test | `scripts/container-smoke.sh [HOST_PORT]` |
 | Healthcheck | `nospy healthcheck` is the image HEALTHCHECK. For a Kubernetes exec probe, use `/nospy healthcheck --listen 127.0.0.1:8788` |
 

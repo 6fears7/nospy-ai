@@ -1,0 +1,41 @@
+site_name: nospy
+site_description: A forward proxy that swaps secrets and personal data for placeholders between an AI agent and its API.
+site_url: https://6fears7.github.io/nospy-ai/
+repo_url: https://github.com/6fears7/nospy-ai
+edit_uri: ""
+
+# Staged from README.md, docs/ and images/ by scripts/build-docs.sh.
+docs_dir: build/docs-src
+site_dir: site
+
+theme:
+  name: material
+  favicon: images/nospy-ghost.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+  features:
+    - content.code.copy
+    - navigation.sections
+
+validation:
+  links:
+    not_found: warn
+    anchors: warn
+
+nav:
+  - Home: index.md
+  - Modes:
+      - Wrap: wrap.md
+      - Scan: scan.md
+      - Serve: serve.md
+      - Container: container.md
+      - Kubernetes: kubernetes.md
+  - Reference:
+      - How it works: how-it-works.md
+      - Custom terms: custom-terms.md
+      - Metrics: metrics.md
+      - Commands: commands.md
+      - Known limitations: limitations.md
