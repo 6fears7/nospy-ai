@@ -2,7 +2,7 @@
 
 ![NoSpy logo with a ghost in place of the O](images/nospy-logo-ghost-o.svg)
 
-`nospy` is a reverse proxy that sits between an AI agent and its API. It swaps secrets and personal data in your requests for placeholders, and puts the real values back in the response.
+`nospy` is a forward proxy that sits between an AI agent and its API. It swaps secrets and personal data in your requests for placeholders, and puts the real values back in the response. 
 
 
 ## Architecture overview
