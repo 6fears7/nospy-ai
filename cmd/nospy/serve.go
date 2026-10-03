@@ -40,7 +40,6 @@ type serveOpts struct {
 }
 
 var serveRouteUsage = "add a route, as `PREFIX=URL[,api=" + apiNames() + "][,key-mode=passthrough|inject][,key-file=FILE]`; repeatable. " 
-#
 
 func defineServeFlags(fs *flag.FlagSet) *serveOpts {
 	o := &serveOpts{}
