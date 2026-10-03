@@ -41,7 +41,7 @@ var commands = map[string]command{
 		define:   func(fs *flag.FlagSet) { defineWrapFlags(fs) },
 	},
 	"serve": {
-		usage: "nospy serve --auth none|static-tokens --route PREFIX=URL[,...] [flags]",
+		usage:   "nospy serve --auth none|static-tokens --route PREFIX=URL[,...] [flags]",
 		summary: "Run the redacting proxy as a long-lived server, a sidecar, or a shared service",
 		examples: []string{
 			"nospy serve --auth none --listen 127.0.0.1:8788 --route /anthropic=https://api.example.com,key-mode=inject,key-file=/run/secrets/key",
