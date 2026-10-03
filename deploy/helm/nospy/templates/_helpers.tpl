@@ -4,8 +4,8 @@ Named templates below take a dict with .Values (this chart's values; from an app
 an app chart includes them with its own context.
 */}}
 
-{{/* Keep equal to appVersion in Chart.yaml (deploy/helm/test.sh checks). */}}
-{{- define "nospy.appVersion" -}}0.1.0{{- end -}}
+{{/* Generated from the root VERSION file (deploy/helm/sync-version.sh). */}}
+{{- define "nospy.appVersion" -}}0.2.0{{- end -}}
 
 {{- define "nospy.image" -}}
 {{ .Values.image.repository }}:{{ .Values.image.tag | default (include "nospy.appVersion" .) }}

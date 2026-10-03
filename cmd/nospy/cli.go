@@ -26,7 +26,7 @@ type command struct {
 var commands = map[string]command{
 	"nospy": {
 		usage: "nospy [flags] -- <command> [args...]",
-		summary: "Redacts information from local agents.\n" + 
+		summary: "Redacts information from local agents.\n" +
 			"Commands:\n" +
 			"  serve       run the proxy as a long-lived server with authentication\n" +
 			"  check       validate a serve configuration and exit\n" +
@@ -42,7 +42,7 @@ var commands = map[string]command{
 	},
 	"serve": {
 		usage: "nospy serve --auth none|static-tokens --route PREFIX=URL[,...] [flags]",
-		summary: "Run the redacting proxy as a long-lived server, for a sidecar, a shared service\n." + 
+		summary: "Run the redacting proxy as a long-lived server, for a sidecar, a shared service\n." +
 			"--auth none is loopback only. See `nospy check` to validate the same flags without listening.",
 		examples: []string{
 			"nospy serve --auth none --listen 127.0.0.1:8788 --route /anthropic=https://api.example.com,key-mode=inject,key-file=/run/secrets/key",
@@ -51,20 +51,20 @@ var commands = map[string]command{
 		define: func(fs *flag.FlagSet) { defineServeFlags(fs) },
 	},
 	"check": {
-		usage: "nospy check [serve flags]",
-		summary: "Validate a serve configuration",
+		usage:    "nospy check [serve flags]",
+		summary:  "Validate a serve configuration",
 		examples: []string{"nospy check --auth static-tokens --tokens-file tokens.txt --listen :8443 --tls-cert tls.crt --tls-key tls.key --route /myllm=https://llm.example/v1,api=openai"},
 		define:   func(fs *flag.FlagSet) { defineServeFlags(fs) },
 	},
 	"healthcheck": {
-		usage: "nospy healthcheck [--listen ADDR] [--scheme http|https] [--timeout DUR]",
-		summary: "Probe a running `nospy serve`: GET /healthz",
+		usage:    "nospy healthcheck [--listen ADDR] [--scheme http|https] [--timeout DUR]",
+		summary:  "Probe a running `nospy serve`: GET /healthz",
 		examples: []string{"nospy healthcheck", "nospy healthcheck --listen 0.0.0.0:8788", "nospy healthcheck --listen 127.0.0.1:8443 --scheme https --timeout 3s"},
 		define:   func(fs *flag.FlagSet) { defineHealthcheckFlags(fs) },
 	},
 	"hash-token": {
-		usage: "nospy hash-token --name NAME [--stdin]",
-		summary: "Create a proxy token for a client and print its tokens-file line.",
+		usage:    "nospy hash-token --name NAME [--stdin]",
+		summary:  "Create a proxy token for a client and print its tokens-file line.",
 		examples: []string{"nospy hash-token --name ci-runner", "printf %s \"$TOKEN\" | nospy hash-token --name ci-runner --stdin"},
 		define:   func(fs *flag.FlagSet) { defineHashTokenFlags(fs) },
 	},

@@ -38,8 +38,12 @@ helm lint "$chart" --set mode=service "${SVC[@]}" >/dev/null && ok "lint service
 (cd "$app" && helm lint . >/dev/null) && ok "lint app fixture" || bad "lint app fixture"
 
 echo "== chart metadata"
-appver=$(sed -n 's/^appVersion: "\(.*\)"/\1/p' "$chart/Chart.yaml")
-has "nospy.appVersion matches Chart.yaml appVersion" "define \"nospy.appVersion\" -}}$appver{{" "$(cat "$chart/templates/_helpers.tpl")"
+if out=$("$here/sync-version.sh" --check 2>&1); then
+  ok "VERSION matches Chart.yaml version, appVersion and the nospy.appVersion helper"
+else
+  bad "VERSION matches Chart.yaml version, appVersion and the nospy.appVersion helper"
+  echo "$out"
+fi
 has "kubeVersion" 'kubeVersion: ">=1.29.0-0"' "$(cat "$chart/Chart.yaml")"
 
 echo "== default values: sidecar mode renders no resources by itself"

@@ -39,7 +39,8 @@ type serveOpts struct {
 	peers, peerSelf string
 }
 
-var serveRouteUsage = "add a route, as `PREFIX=URL[,api=" + apiNames() + "][,key-mode=passthrough|inject][,key-file=FILE]`; repeatable. " 
+var serveRouteUsage = "add a route, as `PREFIX=URL[,api=" + apiNames() + "][,key-mode=passthrough|inject][,key-file=FILE]`; repeatable. "
+
 func defineServeFlags(fs *flag.FlagSet) *serveOpts {
 	o := &serveOpts{}
 	fs.StringVar(&o.listen, "listen", "127.0.0.1:8788", "address to listen on, as `HOST:PORT`. A non-loopback address needs --auth static-tokens and TLS")

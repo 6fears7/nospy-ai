@@ -51,7 +51,8 @@ If you change the Helm chart, also run `deploy/helm/test.sh` (needs `helm`, no c
 
 - Maintainers publish by pushing a tag: `git tag v0.2.0 && git push origin v0.2.0` (`v0.2.0-rc.1` makes a pre-release). 
 - The Release workflow will then run
-- Before tagging a final release, bump `version` and `appVersion` in `deploy/helm/nospy/Chart.yaml` and `nospy.appVersion` in `_helpers.tpl` on `main`; the workflow will refuse a tag that doesn't match `apiVersion`
+- Before tagging a final release, edit `VERSION` on `main` and run `deploy/helm/sync-version.sh`; the workflow refuses a tag that does not match `VERSION`
+- `VERSION` manages the chart version and appVersion (`version` and `appVersion` in Chart.yaml, the `nospy.appVersion` helper, and the sidecar image tag in `examples/sidecar-deployment.yaml`)
 
 ## License
 

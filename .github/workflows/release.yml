@@ -33,11 +33,13 @@ jobs:
             echo "tag $TAG is not vMAJOR.MINOR.PATCH[-prerelease]" >&2
             exit 1
           fi
-          # A final release must tag a tree whose chart already says the same version, so a source
-          # install of the tag matches what was published. Pre-releases are exempt.
-          appver="$(sed -n 's/^appVersion: "\(.*\)"/\1/p' deploy/helm/nospy/Chart.yaml)"
-          if [[ "$TAG" != *-* && "$appver" != "${TAG#v}" ]]; then
-            echo "Chart.yaml appVersion is $appver but the tag is $TAG: bump Chart.yaml (version, appVersion) and nospy.appVersion in _helpers.tpl first" >&2
+          # The chart version and appVersion must agree with VERSION, in both final and pre-release.
+          deploy/helm/sync-version.sh --check
+          # A final release must tag a tree whose VERSION already says the same version, so a
+          # source install of the tag matches what was published. Pre-releases are exempt.
+          ver="$(cat VERSION)"
+          if [[ "$TAG" != *-* && "$ver" != "${TAG#v}" ]]; then
+            echo "VERSION is $ver but the tag is $TAG: edit VERSION and run deploy/helm/sync-version.sh first" >&2
             exit 1
           fi
           echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"

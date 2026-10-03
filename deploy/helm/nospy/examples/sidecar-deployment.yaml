@@ -20,7 +20,7 @@ spec:
       # nospy runs as a native sidecar: it starts before the app and stops after it.
       initContainers:
         - name: nospy
-          image: "nospy:0.1.0"
+          image: "nospy:0.2.0"
           imagePullPolicy: IfNotPresent
           restartPolicy: Always
           args:

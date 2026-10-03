@@ -3,3 +3,5 @@
 /site/
 *.log
 .vscode/
+deploy/helm/test/app/Chart.lock
+deploy/helm/test/app/charts/
