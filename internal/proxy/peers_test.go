@@ -911,6 +911,9 @@ func TestPeerFreezeMidRequest(t *testing.T) {
 			next := c.nextRanked("a", "/anthropic", owner)
 			entry := 3 - owner - next
 			c.sendKnown(t, entry, "DB_PASSWORD=hunter2hunter2") // warms the connection to the owner
+			if !strings.Contains(requestLogs(t, c.pods[entry].logs, 1), `"msg":"request"`) {
+				t.Fatal("warm-up never finished")
+			}
 			if n := c.dialsTo(c.ips[owner]); n != 1 {
 				t.Fatalf("%d dials to the owner while warming", n)
 			}
@@ -957,6 +960,9 @@ func TestPeerFreezeIdle(t *testing.T) {
 	owner := c.ownerOf("a", "/anthropic")
 	entry := c.others("a", "/anthropic")[0]
 	c.sendKnown(t, entry, "DB_PASSWORD=hunter2hunter2")
+	if !strings.Contains(requestLogs(t, c.pods[entry].logs, 1), `"msg":"request"`) {
+		t.Fatal("warm-up never finished")
+	}
 	c.freeze(c.ips[owner])
 	c.waitClosed(t, c.ips[owner], 1) // no request in flight: only the pings can notice
 	if strings.Contains(c.pods[entry].logs.String(), "peer marked down") {
