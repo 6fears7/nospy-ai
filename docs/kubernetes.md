@@ -42,9 +42,13 @@ kubectl -n nospy create secret generic nospy-tokens --from-file=tokens=./tokens 
 kubectl -n nospy create secret tls nospy-tls --cert=tls.crt --key=tls.key
 ```
 
-With **cert-manager**, skip the TLS Secret and add `--set tls.certManager.issuerRef.name=<issuer>` to the install below. For a cluster-wide issuer, also set `tls.certManager.issuerRef.kind=ClusterIssuer`. The chart then creates a `Certificate` that cert-manager writes to `tls.secretName`. cert-manager handles issuing and renewing, and `nospy` reloads the files when they change. It is off by default and still needs `tls.secretName`. The certificate covers the Service name, `.<namespace>`, `.svc` and `.svc.cluster.local`, plus anything in `tls.certManager.dnsNames`.
+With **cert-manager**, skip the TLS Secret and add `--set tls.certManager.issuerRef.name=<issuer>` to the install below. For a cluster-wide issuer, also set `tls.certManager.issuerRef.kind=ClusterIssuer`. 
 
-Then install from a checkout. The cluster must be able to pull the image; use `--set image.repository=...` to change it.
+The chart then creates a `Certificate` that cert-manager writes to `tls.secretName`. cert-manager handles issuing and renewing, and `nospy` reloads the files when they change. It is off by default and still needs `tls.secretName`. 
+
+The certificate covers the Service name, `.<namespace>`, `.svc` and `.svc.cluster.local`, plus anything in `tls.certManager.dnsNames`.
+
+The cluster must be able to pull the image; use `--set image.repository=...` to change it.
 
 ```bash
 helm install nospy deploy/helm/nospy --namespace nospy \

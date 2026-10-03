@@ -59,11 +59,9 @@ To see *why* each thing matched,  you can add `--explain` to the command:
 3:17  EMAIL  email  "dana@example.com"
 ```
 
-Each line is `line:col KIND rule "text"`. A `terms` rule is one of your plain lines, `terms-re` is one of your `re:` lines.
+Format is: `line:col KIND rule "text"`.
 
 ## Use it with the proxy
-
-The same flag works everywhere:
 
 ```bash
 nospy --terms terms.txt -- claude          # wrap a command

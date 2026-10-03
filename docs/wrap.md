@@ -57,7 +57,7 @@ When the command is `claude`, `nospy` writes the base URL to a private settings 
 nospy -- my-openai-agent
 ```
 
-Any agent that reads `OPENAI_BASE_URL` needs no setup. The `/openai` route handles Chat Completions, Responses and Embeddings (`/openai/v1/...`).
+Any agent that reads `OPENAI_BASE_URL` requires no additional setup. The `/openai` route handles Chat Completions, Responses and Embeddings (`/openai/v1/...`).
 
 - To use a gateway instead of `api.openai.com`, pass `--route /openai=<gateway URL>` or set `OPENAI_BASE_URL` in your shell.
 - If an agent ignores `OPENAI_BASE_URL`, set the proxy URL in the agent's own settings. `nospy env` prints it for a running `serve` instance.

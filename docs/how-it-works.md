@@ -18,7 +18,7 @@ These rules apply in every mode.
 
 ## Remembered values
 
-Some secrets are only found because of a clue next to them, such as `password=`. If the model later repeats one in plain text, there is no clue, so `nospy` also remembers the value.
+Some secrets are only detected because of a clue next to them, such as password=. If the model later repeats that value without the clue, the pattern no longer matches. To catch those repeats, nospy remembers each value found this way and redacts it wherever it shows up again.
 
 - **Defaults:** `PASSWORD`, `SECRET`, `TOKEN`, `PRIVATE_KEY`, `USER`, `ADDRESS` and custom terms.
 - **Scope:** each client and route has its own list.
