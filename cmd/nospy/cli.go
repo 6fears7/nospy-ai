@@ -25,12 +25,8 @@ type command struct {
 // commands is keyed by name; "nospy" is the wrapper form `nospy [flags] -- <command>`.
 var commands = map[string]command{
 	"nospy": {
-		usage: "nospy [flags] -- <command> [args...]\n       nospy serve|check|healthcheck|hash-token|scan|env|providers|version|help ...",
-		summary: "Run <command> behind a local redacting proxy. Secrets and PII in requests to the LLM API\n" +
-			"are replaced by placeholders like [REDACTED_EMAIL_1], and the values are restored\n" +
-			"in responses. The proxy listens on 127.0.0.1 behind a random per-run path token, and nospy\n" +
-			"hands its address to the command through base-URL env vars (and, for known agents, a\n" +
-			"settings file).\n" +
+		usage: "nospy [flags] -- <command> [args...]",
+		summary: "Redacts information from local agents.\n" + 
 			"Commands:\n" +
 			"  serve       run the proxy as a long-lived server with authentication\n" +
 			"  check       validate a serve configuration and exit\n" +
@@ -46,12 +42,7 @@ var commands = map[string]command{
 	},
 	"serve": {
 		usage: "nospy serve --auth none|static-tokens --route PREFIX=URL[,...] [flags]",
-		summary: "Run the redacting proxy as a long-lived server, for a sidecar, a shared service or any agent\n" +
-			"not started by `nospy --`. Every request is authenticated before its body is read; nothing\n" +
-			"unauthenticated is forwarded. Only the routes you list are served. GET /healthz and /readyz need\n" +
-			"no credentials. Logs are JSON on stdout, one line per request. SIGTERM stops accepting and\n" +
-			"lets in-flight requests and streams finish, up to --shutdown-timeout.\n" +
-			"A non-loopback --listen needs --auth static-tokens and TLS (or --insecure-plaintext);\n" +
+		summary: "Run the redacting proxy as a long-lived server, for a sidecar, a shared service\n." + 
 			"--auth none is loopback only. See `nospy check` to validate the same flags without listening.",
 		examples: []string{
 			"nospy serve --auth none --listen 127.0.0.1:8788 --route /anthropic=https://api.example.com,key-mode=inject,key-file=/run/secrets/key",
@@ -61,36 +52,25 @@ var commands = map[string]command{
 	},
 	"check": {
 		usage: "nospy check [serve flags]",
-		summary: "Validate a serve configuration without listening: flag combinations, the terms file, the tokens\n" +
-			"file, key files, the TLS pair (parses, matches, not expired) and the upstream URLs. It builds the\n" +
-			"configuration with the same code as `nospy serve`. Exit 0 prints a one-line summary (no secrets,\n" +
-			"tokens, keys or terms) and warns when the TLS certificate expires within 14 days; any problem\n" +
-			"exits 1 and every problem is listed.",
+		summary: "Validate a serve configuration",
 		examples: []string{"nospy check --auth static-tokens --tokens-file tokens.txt --listen :8443 --tls-cert tls.crt --tls-key tls.key --route /myllm=https://llm.example/v1,api=openai"},
 		define:   func(fs *flag.FlagSet) { defineServeFlags(fs) },
 	},
 	"healthcheck": {
 		usage: "nospy healthcheck [--listen ADDR] [--scheme http|https] [--timeout DUR]",
-		summary: "Probe a running `nospy serve`: GET /healthz, exit 0 on 200 and 1 otherwise, with the reason on stderr.\n" +
-			"For container health checks and Kubernetes exec probes, since the image has no shell or curl.\n" +
-			"The same --listen value serve got works here (a wildcard address probes 127.0.0.1). The probe\n" +
-			"sends no token or key, follows no redirects and uses no proxy; with --scheme https it does not\n" +
-			"verify the certificate.",
+		summary: "Probe a running `nospy serve`: GET /healthz",
 		examples: []string{"nospy healthcheck", "nospy healthcheck --listen 0.0.0.0:8788", "nospy healthcheck --listen 127.0.0.1:8443 --scheme https --timeout 3s"},
 		define:   func(fs *flag.FlagSet) { defineHealthcheckFlags(fs) },
 	},
 	"hash-token": {
 		usage: "nospy hash-token --name NAME [--stdin]",
-		summary: "Create a proxy token for a client and print its tokens-file line. The token is 32 random bytes as\n" +
-			"nspy_<base64url>; it is shown once and never stored, so give it to the client. The line, NAME:<sha256hex>,\n" +
-			"goes in the file passed to `nospy serve --tokens-file`; only the hash is kept there. With --stdin, hash a\n" +
-			"token you already have (read from standard input) and print only the line. NAME appears in logs.",
+		summary: "Create a proxy token for a client and print its tokens-file line.",
 		examples: []string{"nospy hash-token --name ci-runner", "printf %s \"$TOKEN\" | nospy hash-token --name ci-runner --stdin"},
 		define:   func(fs *flag.FlagSet) { defineHashTokenFlags(fs) },
 	},
 	"scan": {
 		usage:   "nospy scan [--explain] [--terms FILE] [FILE...]",
-		summary: "Read FILEs (or stdin when none are given; \"-\" is stdin), write them to stdout with sensitive values\nreplaced by placeholders, and print redaction counts per kind to stderr. The same value gets the same\nplaceholder in every file. With --explain, print one line per match instead (prefixed with the file\nname when there are several inputs).",
+		summary: "Read FILEs (or stdin when none are given; \"-\" is stdin), write them to stdout with sensitive values\nreplaced by placeholders, and print redaction counts per kind to stderr.",
 		examples: []string{
 			`echo "ssh root@10.0.0.5" | nospy scan`,
 			"nospy scan --explain < .env",
@@ -101,7 +81,7 @@ var commands = map[string]command{
 	},
 	"env": {
 		usage:   "nospy env --addr URL [--token T] [--shell sh|fish]",
-		summary: "Print the exports that point a shell at a running nospy service. The shell defaults to\nthe basename of $SHELL (fish gets `set -gx`, anything else `export`).",
+		summary: "Print the exports that point a shell at a running nospy service.",
 		examples: []string{
 			"nospy env --addr http://127.0.0.1:8788 | source",
 			"eval \"$(nospy env --addr http://nospy.internal:8788 --token abc --shell sh)\"",
@@ -110,7 +90,7 @@ var commands = map[string]command{
 	},
 	"providers": {
 		usage:    "nospy providers",
-		summary:  "List the built-in providers: name, API family and upstream. Use one with\n`nospy --provider NAME -- <command>`, which adds the route /NAME and points the API family's\nbase-URL variable (ANTHROPIC_BASE_URL or OPENAI_BASE_URL) at it. You still supply the provider's\nkey the usual way; nospy passes it through.",
+		summary:  "List the built-in providers: name, API family and upstream.",
 		examples: []string{"nospy providers"},
 	},
 	"version": {

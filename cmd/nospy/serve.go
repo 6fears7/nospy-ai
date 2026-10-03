@@ -39,11 +39,8 @@ type serveOpts struct {
 	peers, peerSelf string
 }
 
-var serveRouteUsage = "add a route, as `PREFIX=URL[,api=" + apiNames() + "][,key-mode=passthrough|inject][,key-file=FILE]`; repeatable. " +
-	"Serve has no implicit routes: list every one. api is inferred for a built-in PREFIX and required for a new one. " +
-	"key-mode passthrough (the default): the client sends its real key plus the proxy token in X-Nospy-Token or a /t/<token>/ path prefix. " +
-	"key-mode inject: the client sends the proxy token in the key header, and nospy replaces every client credential with the key read from FILE " +
-	"(required with inject, invalid otherwise; no commas in the path)"
+var serveRouteUsage = "add a route, as `PREFIX=URL[,api=" + apiNames() + "][,key-mode=passthrough|inject][,key-file=FILE]`; repeatable. " 
+
 
 func defineServeFlags(fs *flag.FlagSet) *serveOpts {
 	o := &serveOpts{}
