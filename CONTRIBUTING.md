@@ -2,7 +2,7 @@
 
 Thanks for helping! I've felt like there's been a lack of emphasis on privacy and decided that building a tool to support a lower digital footprint would be helpful for you and others.
 
-`nospy` sits between an agent and an LLM and decides what gets sent, so changes are reviewed with that in mind. Small, focused pull requests move fastest.
+`nospy` sits between an agent and the upstream API and decides what gets sent, so changes are reviewed with that in mind. Small, focused pull requests move fastest.
 
 ## Before you start
 
