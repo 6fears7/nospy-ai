@@ -138,7 +138,7 @@ jobs:
       VERSION: ${{ needs.version.outputs.version }}
     steps:
       - uses: actions/checkout@v7
-      - uses: azure/setup-helm@v4
+      - uses: azure/setup-helm@v5
         with:
           version: v4.3.0
       # The chart's default image is the local dev name, and its default tag comes from a helper that
